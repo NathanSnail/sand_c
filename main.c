@@ -79,7 +79,7 @@ struct particle get_particle(int id)
 	return particles[id];
 }
 
-//unix microseconds
+// unix microseconds
 uint64_t cur_time()
 {
 	clock_gettime(NULL, time_handle);
@@ -313,11 +313,10 @@ int main(int argc, char **argv)
 	srand((unsigned)gettimeofday(time_handle, NULL));
 	while (1)
 	{
-			printf("%ld\n",cur_time());
-			for(int i = 0; i < 100000000; i++)
-			{
-
-			}
+		printf("%ld\n", cur_time());
+		for (int i = 0; i < 100000000; i++)
+		{
+		}
 		// printf("%ld\n", gettimeofday(time_handle, NULL));
 		// fflush(stdout);
 	}
