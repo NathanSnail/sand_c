@@ -4,7 +4,10 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#define WORLD_SIZE 128
+#define WORLD_SIZE 400
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 800
+#define PIXEL_SIZE 2
 
 struct timespec time;
 struct timespec *time_handle;
@@ -16,6 +19,18 @@ struct colour
 	float blue;
 	float alpha;
 };
+
+// unix microseconds
+uint64_t cur_time()
+{
+	clock_gettime(NULL, time_handle);
+	return time.tv_sec * 1000000 + time.tv_nsec / 1000;
+}
+
+float randf()
+{
+	return ((float)rand()) / ((float)(RAND_MAX));
+}
 
 struct colour new_colour(float red, float green, float blue, float alpha)
 {
@@ -50,21 +65,53 @@ void setup()
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
+uint64_t frame_times[60];
+int cur_frame_index = 0;
+
+unsigned char screen[SCREEN_WIDTH][SCREEN_HEIGHT][4]; // consider that the struct probably alligns this correctly anyway
+
 void display()
 {
+	uint64_t start = cur_time();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	for (int x = 0; x < WORLD_SIZE; x++)
+	glLoadIdentity();
+	// for (int x = 0; x < SCREEN_WIDTH; x++)
+	// {
+	// 	for (int y = 0; y < SCREEN_HEIGHT; y++)
+	// 	{
+	// 		for (int c = 0; c < 4; c++)
+	// 		{
+	// 			screen[x][y][c] = 0x00;
+	// 		}
+	// 	}
+	// }
+	for (int x = 0; x < SCREEN_WIDTH; x++)
 	{
-		for (int y = 0; y < WORLD_SIZE; y++)
+		for (int y = 0; y < SCREEN_HEIGHT; y++)
 		{
-			float xp = ((float)x) / (((float)WORLD_SIZE) / 2.0f) - 1.0f;
-			float yp = ((float)y) / (((float)WORLD_SIZE) / 2.0f) - 1.0f;
-			struct colour cur_col = world[x][y].col;
-			glColor3f(cur_col.red, cur_col.green, cur_col.blue);
-			glRectf(xp, yp, xp + 2.0f / (float)WORLD_SIZE, yp + 2.0f / (float)WORLD_SIZE);
+			int wx = x / PIXEL_SIZE;
+			int wy = y / PIXEL_SIZE;
+			struct colour cur_col = world[wx][wy].col;
+			screen[y][x][0] = (unsigned char)(cur_col.red * 255.9);
+			screen[y][x][1] = (unsigned char)(cur_col.green * 255.9);
+			screen[y][x][2] = (unsigned char)(cur_col.blue * 255.9);
+			screen[y][x][3] = 0xff;
 		}
 	}
+	// unsigned char pixels[100][4];
+	glDrawPixels(SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, &screen);
 	glutSwapBuffers();
+	frame_times[cur_frame_index] = cur_time() - start;
+	cur_frame_index += 1;
+	cur_frame_index = cur_frame_index % 60;
+	int sum_time = 0;
+	for (int i = 0; i < 60; i++)
+	{
+		sum_time += frame_times[i];
+	}
+	float last_frame_mean_time = ((float)sum_time) / 60.0f;
+	float last_frame_ms_mean_time = last_frame_mean_time / 1000.0f;
+	printf("frame: %fms\n", last_frame_ms_mean_time);
 }
 
 struct particle get_particle(int id)
@@ -77,18 +124,6 @@ struct particle get_particle(int id)
 			new_particle(new_colour(0.2f, 0.2f, 0.2f, 0.5f), 3),
 		};
 	return particles[id];
-}
-
-// unix microseconds
-uint64_t cur_time()
-{
-	clock_gettime(NULL, time_handle);
-	return time.tv_sec * 1000000 + time.tv_nsec / 1000;
-}
-
-float randf()
-{
-	return ((float)rand()) / ((float)(RAND_MAX));
 }
 
 enum type
@@ -241,14 +276,17 @@ void tick_gas(int x, int y, struct particle *cur)
 	}
 }
 
+uint64_t tick_times[60];
+int cur_tick_index = 0;
+
 void tick()
 {
+	uint64_t start = cur_time();
 	glutPostRedisplay();
 	world[tick_x][tick_y] = get_particle(randf() < 0.5 ? 1 : 2);
 	tick_x += 1;
 	tick_y -= tick_x / WORLD_SIZE;
 	tick_x = tick_x % WORLD_SIZE;
-	glutTimerFunc(0, tick, 0);
 	for (int y = 0; y < WORLD_SIZE; y++)
 	{
 		for (int x = 0; x < WORLD_SIZE; x++)
@@ -287,6 +325,18 @@ void tick()
 			world[x][y].ticked = 0;
 		}
 	}
+	glutTimerFunc(0, tick, 0);
+	tick_times[cur_tick_index] = cur_time() - start;
+	cur_tick_index += 1;
+	cur_tick_index = cur_tick_index % 60;
+	int sum_time = 0;
+	for (int i = 0; i < 60; i++)
+	{
+		sum_time += tick_times[i];
+	}
+	float last_frame_mean_time = ((float)sum_time) / 60.0f;
+	float last_tick_ms_mean_time = last_frame_mean_time / 1000.0f;
+	printf("tick:  %fms\n", last_tick_ms_mean_time);
 }
 
 void init_world()
@@ -309,20 +359,20 @@ void init_world()
 
 int main(int argc, char **argv)
 {
+	printf("%hhx\n", (unsigned char)(0.5f * 255.99f));
+	// exit(0);
 	time_handle = &time;
 	srand((unsigned)gettimeofday(time_handle, NULL));
-	while (1)
-	{
-		printf("%ld\n", cur_time());
-		for (int i = 0; i < 100000000; i++)
-		{
-		}
-		// printf("%ld\n", gettimeofday(time_handle, NULL));
-		// fflush(stdout);
-	}
+	// while (1)
+	// {
+	// 	printf("%ld\n", cur_time());
+	// 	for (int i = 0; i < 100000000; i++)
+	// 	{
+	// 	}
+	// }
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-	glutInitWindowSize(800, 800);
+	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	glutCreateWindow("Sand Sim");
 
 	setup();
