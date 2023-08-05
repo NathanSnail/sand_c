@@ -5,7 +5,7 @@
 #include <sys/time.h>
 
 #define WORLD_SIZE 400
-#define SCREEN_WIDTH 800
+#define SCREEN_WIDTH 700
 #define SCREEN_HEIGHT 800
 #define PIXEL_SIZE 2
 
@@ -68,7 +68,7 @@ void setup()
 uint64_t frame_times[60];
 int cur_frame_index = 0;
 
-unsigned char screen[SCREEN_WIDTH][SCREEN_HEIGHT][4]; // consider that the struct probably alligns this correctly anyway
+unsigned char screen[SCREEN_HEIGHT][SCREEN_WIDTH][4]; // consider that the struct probably alligns this correctly anyway
 
 void display()
 {
