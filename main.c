@@ -5,8 +5,8 @@
 #include <sys/time.h>
 
 #define WORLD_SIZE 400
-#define SCREEN_WIDTH 700
-#define SCREEN_HEIGHT 800
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 #define PIXEL_SIZE 2
 
 struct timespec time;
@@ -98,6 +98,7 @@ void display()
 			screen[y][x][3] = 0xff;
 		}
 	}
+	printf("place: %fms\n", ((float)(cur_time() - start)) / 1000.0f);
 	// unsigned char pixels[100][4];
 	glDrawPixels(SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, &screen);
 	glutSwapBuffers();
@@ -359,8 +360,20 @@ void init_world()
 
 int main(int argc, char **argv)
 {
-	printf("%hhx\n", (unsigned char)(0.5f * 255.99f));
-	// exit(0);
+	printf("%x\n", (unsigned char)(0.5f * 255.99f));
+	printf("%x\n", new_colour(1.0f, 1.0f, 2.0f, 3.0f));
+	unsigned char d[2][4];
+	d[2][0] = 0xDE;
+	d[2][1] = 0xAD;
+	d[2][2] = 0xBE;
+	d[2][3] = 0xEF;
+	printf("%x\n", &d);
+	printf("%x\n", &d[1]);
+	unsigned char *a = &d;
+	*a = 0xabcdef01;
+
+	printf("%x\n", d[0][1]);
+	exit(0);
 	time_handle = &time;
 	srand((unsigned)gettimeofday(time_handle, NULL));
 	// while (1)
