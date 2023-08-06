@@ -3,61 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
-
-#define SCREEN_WIDTH 1900
-#define SCREEN_HEIGHT 1000
-#define PIXEL_SIZE 5
-#define WORLD_WIDTH SCREEN_WIDTH / PIXEL_SIZE
-#define WORLD_HEIGHT SCREEN_HEIGHT / PIXEL_SIZE
-
-struct timespec time;
-struct timespec *time_handle;
-
-struct colour
-{
-	float red;
-	float green;
-	float blue;
-	float alpha;
-};
-
-// unix microseconds
-uint64_t cur_time()
-{
-	clock_gettime(NULL, time_handle);
-	return time.tv_sec * 1000000 + time.tv_nsec / 1000;
-}
-
-float randf()
-{
-	return ((float)rand()) / ((float)(RAND_MAX));
-}
-
-struct colour new_colour(float red, float green, float blue, float alpha)
-{
-	struct colour col;
-	col.red = red;
-	col.green = green;
-	col.blue = blue;
-	col.alpha = alpha;
-	return col;
-}
-
-struct particle
-{
-	uint mat;
-	struct colour col;
-	int ticked;
-};
-
-struct particle new_particle(struct colour col, uint mat)
-{
-	struct particle created;
-	created.col = col;
-	created.mat = mat;
-	created.ticked = 0;
-	return created;
-}
+#include "utils.c"
+#include "material_defs.c"
 
 struct particle world[WORLD_WIDTH][WORLD_HEIGHT];
 
@@ -114,40 +61,6 @@ void display()
 	float last_frame_ms_mean_time = last_frame_mean_time / 1000.0f;
 	printf("frame: %fms\n", last_frame_ms_mean_time);
 }
-
-struct particle get_particle(int id)
-{
-	const struct particle particles[] =
-		{
-			new_particle(new_colour(0.2f, 0.3f, 0.6f, 1.0f), 0),
-			new_particle(new_colour(1.0f, 1.0f, 0.0f, 1.0f), 1),
-			new_particle(new_colour(0.0f, 0.0f, 0.7f, 0.5f), 2),
-			new_particle(new_colour(0.2f, 0.2f, 0.2f, 0.5f), 3),
-		};
-	return particles[id];
-}
-
-enum type
-{
-	AIR,
-	GAS,
-	POWDER,
-	LIQUID,
-	STATIC,
-};
-enum type types[] = {
-	AIR,
-	POWDER,
-	LIQUID,
-	GAS,
-};
-
-float density[] = {
-	0.0f,
-	1.0f,
-	0.5f,
-	0.05f,
-};
 
 int tick_x = 0;
 int tick_y = WORLD_HEIGHT - 1;
