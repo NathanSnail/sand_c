@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#define WORLD_SIZE 2000
+#define WORLD_SIZE 400
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
-#define PIXEL_SIZE 1
+#define PIXEL_SIZE 5
 
 struct timespec time;
 struct timespec *time_handle;
@@ -68,7 +68,7 @@ void setup()
 uint64_t frame_times[60];
 int cur_frame_index = 0;
 
-unsigned char screen[SCREEN_HEIGHT][SCREEN_WIDTH][4]; // consider that the struct probably alligns this correctly anyway
+unsigned char screen[SCREEN_HEIGHT / PIXEL_SIZE][SCREEN_WIDTH / PIXEL_SIZE][4]; // consider that the struct probably alligns this correctly anyway
 
 void display()
 {
@@ -85,13 +85,11 @@ void display()
 	// 		}
 	// 	}
 	// }
-	for (int x = 0; x < SCREEN_WIDTH; x++)
+	for (int x = 0; x < SCREEN_WIDTH / PIXEL_SIZE; x++)
 	{
-		for (int y = 0; y < SCREEN_HEIGHT; y++)
+		for (int y = 0; y < SCREEN_HEIGHT / PIXEL_SIZE; y++)
 		{
-			int wx = x / PIXEL_SIZE;
-			int wy = y / PIXEL_SIZE;
-			struct colour cur_col = world[wx][wy].col;
+			struct colour cur_col = world[x][y].col;
 			screen[y][x][0] = (unsigned char)(cur_col.red * 255.9);
 			screen[y][x][1] = (unsigned char)(cur_col.green * 255.9);
 			screen[y][x][2] = (unsigned char)(cur_col.blue * 255.9);
@@ -100,7 +98,8 @@ void display()
 	}
 	printf("place: %fms\n", ((float)(cur_time() - start)) / 1000.0f);
 	// unsigned char pixels[100][4];
-	glDrawPixels(SCREEN_WIDTH, SCREEN_HEIGHT, GL_RGBA, GL_UNSIGNED_BYTE, &screen);
+	glPixelZoom(PIXEL_SIZE, PIXEL_SIZE);
+	glDrawPixels(SCREEN_WIDTH / PIXEL_SIZE, SCREEN_HEIGHT / PIXEL_SIZE, GL_RGBA, GL_UNSIGNED_BYTE, &screen);
 	glutSwapBuffers();
 	frame_times[cur_frame_index] = cur_time() - start;
 	cur_frame_index += 1;
@@ -373,7 +372,7 @@ int main(int argc, char **argv)
 	*a = 0xabcdef01;
 
 	printf("%x\n", d[0][1]);
-	exit(0);
+	// exit(0);
 	time_handle = &time;
 	srand((unsigned)gettimeofday(time_handle, NULL));
 	// while (1)
