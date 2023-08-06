@@ -28,29 +28,8 @@ void init_world()
 
 int main(int argc, char **argv)
 {
-	printf("%x\n", (unsigned char)(0.5f * 255.99f));
-	printf("%x\n", new_colour(1.0f, 1.0f, 2.0f, 3.0f));
-	unsigned char d[2][4];
-	d[2][0] = 0xDE;
-	d[2][1] = 0xAD;
-	d[2][2] = 0xBE;
-	d[2][3] = 0xEF;
-	printf("%x\n", &d);
-	printf("%x\n", &d[1]);
-	unsigned char *a = &d;
-	*a = 0xabcdef01;
-
-	printf("%x\n", d[0][1]);
-	// exit(0);
 	time_handle = &time;
 	srand((unsigned)gettimeofday(time_handle, NULL));
-	// while (1)
-	// {
-	// 	printf("%ld\n", cur_time());
-	// 	for (int i = 0; i < 100000000; i++)
-	// 	{
-	// 	}
-	// }
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
 	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);

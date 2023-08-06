@@ -1,3 +1,9 @@
+#include <GL/gl.h>
+#include <GL/glut.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/time.h>
+
 void setup()
 {
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -36,8 +42,8 @@ void display()
 	}
 	printf("place: %fms\n", ((float)(cur_time() - start)) / 1000.0f);
 	// unsigned char pixels[100][4];
-	glPixelZoom(PIXEL_SIZE, PIXEL_SIZE);
-	glDrawPixels(SCREEN_WIDTH / PIXEL_SIZE, SCREEN_HEIGHT / PIXEL_SIZE, GL_RGBA, GL_UNSIGNED_BYTE, &screen);
+	// glPixelZoom(PIXEL_SIZE, PIXEL_SIZE);
+	// glDrawPixels(SCREEN_WIDTH / PIXEL_SIZE, SCREEN_HEIGHT / PIXEL_SIZE, GL_RGBA, GL_UNSIGNED_BYTE, &screen);
 	glutSwapBuffers();
 	frame_times[cur_frame_index] = cur_time() - start;
 	cur_frame_index += 1;
