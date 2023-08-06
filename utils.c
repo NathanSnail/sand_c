@@ -1,5 +1,5 @@
-#define SCREEN_WIDTH 1900
-#define SCREEN_HEIGHT 1000
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 400
 #define PIXEL_SIZE 5
 #define WORLD_WIDTH (SCREEN_WIDTH / PIXEL_SIZE)
 #define WORLD_HEIGHT (SCREEN_HEIGHT / PIXEL_SIZE)
@@ -51,7 +51,7 @@ struct particle new_particle(struct colour col, uint mat)
 }
 
 // unix microseconds
-uint64_t cur_time()
+unsigned int long cur_time()
 {
 	clock_gettime(NULL, time_handle);
 	return time.tv_sec * 1000000 + time.tv_nsec / 1000;

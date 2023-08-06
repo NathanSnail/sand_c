@@ -125,13 +125,12 @@ void tick_gas(int x, int y, struct particle *cur)
 	}
 }
 
-uint64_t tick_times[60];
+unsigned long int tick_times[60];
 int cur_tick_index = 0;
 
 void tick()
 {
-	uint64_t start = cur_time();
-	glutPostRedisplay();
+	unsigned long int start = cur_time();
 	for (int y = 0; y < WORLD_HEIGHT; y++)
 	{
 		for (int x = 0; x < WORLD_WIDTH; x++)
@@ -170,7 +169,6 @@ void tick()
 			world[x][y].ticked = 0;
 		}
 	}
-	glutTimerFunc(0, tick, 0);
 	tick_times[cur_tick_index] = cur_time() - start;
 	cur_tick_index += 1;
 	cur_tick_index = cur_tick_index % 60;

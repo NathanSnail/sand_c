@@ -1,24 +1,19 @@
-#include <GL/gl.h>
-#include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 
 void setup()
 {
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-uint64_t frame_times[60];
+unsigned long int frame_times[60];
 int cur_frame_index = 0;
 
 unsigned char screen[SCREEN_HEIGHT / PIXEL_SIZE][SCREEN_WIDTH / PIXEL_SIZE][4]; // consider that the struct probably alligns this correctly anyway
 
 void display()
 {
-	uint64_t start = cur_time();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 1ms
-	glLoadIdentity();									// 2ms
+	unsigned long int start = cur_time();
 	// for (int x = 0; x < SCREEN_WIDTH; x++)
 	// {
 	// 	for (int y = 0; y < SCREEN_HEIGHT; y++)
@@ -41,10 +36,6 @@ void display()
 		}
 	}
 	printf("place: %fms\n", ((float)(cur_time() - start)) / 1000.0f);
-	// unsigned char pixels[100][4];
-	glPixelZoom(PIXEL_SIZE, PIXEL_SIZE); //0.3ms
-	glDrawPixels(SCREEN_WIDTH / PIXEL_SIZE, SCREEN_HEIGHT / PIXEL_SIZE, GL_RGBA, GL_UNSIGNED_BYTE, &screen); //2ms
-	glutSwapBuffers(); //6ms
 	frame_times[cur_frame_index] = cur_time() - start;
 	cur_frame_index += 1;
 	cur_frame_index = cur_frame_index % 60;

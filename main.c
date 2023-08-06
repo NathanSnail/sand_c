@@ -1,5 +1,3 @@
-#include <GL/gl.h>
-#include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -30,15 +28,7 @@ int main(int argc, char **argv)
 {
 	time_handle = &time;
 	srand((unsigned)gettimeofday(time_handle, NULL));
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-	glutCreateWindow("Sand Sim");
 
-	setup();
-	glutDisplayFunc(display);
 	init_world();
-	glutTimerFunc(0, tick, 0);
-	glutMainLoop();
 	return 0;
 }

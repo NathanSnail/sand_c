@@ -1,4 +1,4 @@
-gcc main.c -O3 -o build -lGL -lglut
+gcc main.c -O3 -o build -lSDL2
 function handler(){
     rm build
 }
