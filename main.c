@@ -4,10 +4,11 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#define WORLD_SIZE 400
-#define SCREEN_WIDTH 1920
-#define SCREEN_HEIGHT 1080
+#define SCREEN_WIDTH 1900
+#define SCREEN_HEIGHT 1000
 #define PIXEL_SIZE 5
+#define WORLD_WIDTH SCREEN_WIDTH / PIXEL_SIZE
+#define WORLD_HEIGHT SCREEN_HEIGHT / PIXEL_SIZE
 
 struct timespec time;
 struct timespec *time_handle;
@@ -58,7 +59,7 @@ struct particle new_particle(struct colour col, uint mat)
 	return created;
 }
 
-struct particle world[WORLD_SIZE][WORLD_SIZE];
+struct particle world[WORLD_WIDTH][WORLD_HEIGHT];
 
 void setup()
 {
@@ -149,7 +150,7 @@ float density[] = {
 };
 
 int tick_x = 0;
-int tick_y = WORLD_SIZE - 1;
+int tick_y = WORLD_HEIGHT - 1;
 
 int tick_powder(int x, int y, struct particle *cur)
 {
@@ -166,7 +167,7 @@ int tick_powder(int x, int y, struct particle *cur)
 		int dir;
 		if (randf() > 0.5)
 		{
-			if (x >= WORLD_SIZE - 1)
+			if (x >= WORLD_WIDTH - 1)
 			{
 				return 1;
 			}
@@ -202,7 +203,7 @@ void tick_liquid(int x, int y, struct particle *cur)
 		int dir;
 		if (randf() > 0.5)
 		{
-			if (x >= WORLD_SIZE - 1)
+			if (x >= WORLD_WIDTH - 1)
 			{
 				return;
 			}
@@ -229,7 +230,7 @@ void tick_liquid(int x, int y, struct particle *cur)
 
 void tick_gas(int x, int y, struct particle *cur)
 {
-	if (y >= WORLD_SIZE - 1)
+	if (y >= WORLD_HEIGHT - 1)
 	{
 		return;
 	}
@@ -244,7 +245,7 @@ void tick_gas(int x, int y, struct particle *cur)
 	int dir;
 	if (randf() > 0.5)
 	{
-		if (x >= WORLD_SIZE - 1)
+		if (x >= WORLD_WIDTH - 1)
 		{
 			return;
 		}
@@ -285,11 +286,11 @@ void tick()
 	glutPostRedisplay();
 	world[tick_x][tick_y] = get_particle(randf() < 0.5 ? 1 : 2);
 	tick_x += 1;
-	tick_y -= tick_x / WORLD_SIZE;
-	tick_x = tick_x % WORLD_SIZE;
-	for (int y = 0; y < WORLD_SIZE; y++)
+	tick_y -= tick_x / WORLD_WIDTH;
+	tick_x = tick_x % WORLD_WIDTH;
+	for (int y = 0; y < WORLD_HEIGHT; y++)
 	{
-		for (int x = 0; x < WORLD_SIZE; x++)
+		for (int x = 0; x < WORLD_WIDTH; x++)
 		{
 			struct particle cur = world[x][y];
 			if (cur.ticked)
@@ -318,9 +319,9 @@ void tick()
 			}
 		}
 	}
-	for (int y = 0; y < WORLD_SIZE; y++)
+	for (int y = 0; y < WORLD_HEIGHT; y++)
 	{
-		for (int x = 0; x < WORLD_SIZE; x++)
+		for (int x = 0; x < WORLD_WIDTH; x++)
 		{
 			world[x][y].ticked = 0;
 		}
@@ -341,11 +342,11 @@ void tick()
 
 void init_world()
 {
-	for (int x = 0; x < WORLD_SIZE; x++)
+	for (int x = 0; x < WORLD_WIDTH; x++)
 	{
-		for (int y = 0; y < WORLD_SIZE; y++)
+		for (int y = 0; y < WORLD_HEIGHT; y++)
 		{
-			if (abs(x - WORLD_SIZE / 2) < 2 || randf() < 0.1)
+			if (abs(x - WORLD_WIDTH / 2) < 2 || randf() < 0.1)
 			{
 				world[x][y] = get_particle(3);
 			}
