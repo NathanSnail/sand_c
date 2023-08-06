@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#define WORLD_SIZE 400
+#define WORLD_SIZE 2000
 #define SCREEN_WIDTH 1920
 #define SCREEN_HEIGHT 1080
-#define PIXEL_SIZE 2
+#define PIXEL_SIZE 1
 
 struct timespec time;
 struct timespec *time_handle;
