@@ -130,6 +130,8 @@ int cur_tick_index = 0;
 
 void tick()
 {
+	world[0][WORLD_HEIGHT-1] = get_particle(1);
+	world[WORLD_WIDTH-1][WORLD_HEIGHT-1] = get_particle(2);
 	uint64_t start = cur_time();
 	glutPostRedisplay();
 	for (int y = 0; y < WORLD_HEIGHT; y++)
