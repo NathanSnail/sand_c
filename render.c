@@ -36,26 +36,7 @@ void display()
 	}
 	printf("place: %fms\n", ((float)(cur_time() - start)));
 	SDL_UpdateTexture(texture,NULL,screen,4*WORLD_WIDTH);
-	//unsigned char pixels[1][1] = {{0xff}};
-	//SDL_Surface *surf = SDL_LoadBMP("example.bmp");
-	//SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer,surf);
-	//SDL_UpdateTexture(texture,NULL,pixels,4);
 	SDL_RenderCopy(renderer,texture,NULL,NULL);
-	int res = SDL_UpdateTexture(texture, NULL, screen, 4 * WORLD_WIDTH);
-	if (res)
-	{
-		printf("tex update = bad\n");
-	}
-	// unsigned char pixels[1][1] = {{0xff}};
-	// SDL_Surface *surf = SDL_LoadBMP("example.bmp");
-	// SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer,surf);
-	// SDL_UpdateTexture(texture,NULL,pixels,4);
-	res = SDL_RenderCopy(renderer, texture, NULL, NULL);
-	if (res)
-	{
-		printf("copy = bad\n");
-	}
-	// printf("place: %fms\n", ((float)(cur_time() - start)));
 	frame_times[cur_frame_index] = cur_time() - start;
 	cur_frame_index += 1;
 	cur_frame_index = cur_frame_index % 60;
