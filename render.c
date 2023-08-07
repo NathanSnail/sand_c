@@ -34,7 +34,7 @@ void display()
 			screen[WORLD_HEIGHT-y-1][x][3] = (unsigned char)(cur_col.alpha * 255.9);
 		}
 	}
-	printf("place: %fms\n", ((float)(cur_time() - start)) / 1000.0f);
+	printf("place: %fms\n", ((float)(cur_time() - start)));
 	SDL_UpdateTexture(texture,NULL,screen,4*WORLD_WIDTH);
 	//unsigned char pixels[1][1] = {{0xff}};
 	//SDL_Surface *surf = SDL_LoadBMP("example.bmp");
@@ -65,8 +65,7 @@ void display()
 		sum_time += frame_times[i];
 	}
 	float last_frame_mean_time = ((float)sum_time) / 60.0f;
-	float last_frame_ms_mean_time = last_frame_mean_time / 1000.0f;
-	printf("frame: %fms\n", last_frame_ms_mean_time);
+	printf("frame: %fms\n", last_frame_mean_time);
 	SDL_RenderPresent(renderer);
 	//printf("%s\n",SDL_GetError());
 	// printf("frame: %fms\n", last_frame_ms_mean_time);

@@ -1,1 +1,1 @@
-cl /I "C:\bin\SDLVC\include" main.c "C:\bin\SDLVC\lib\x86\SDL2.lib"
+cl /O2 /I "C:\bin\SDLVC\include" main.c "C:\bin\SDLVC\lib\x86\SDL2.lib"

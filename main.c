@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
 	unsigned long loop_count = 0;
 	while (1)
 	{
-		printf("%lu\n", cur_time());
 		int quit = handle_input();
 		if (quit)
 		{
