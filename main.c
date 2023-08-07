@@ -44,6 +44,7 @@ int main(int argc, char *argv[])
 	unsigned long loop_count = 0;
 	while (1)
 	{
+		unsigned long start = cur_time();
 		int quit = handle_input();
 		if (quit)
 		{
@@ -60,6 +61,10 @@ int main(int argc, char *argv[])
 		}
 		tick();
 		display();
+		unsigned long end = cur_time();
+		if (end > start) { // stop sleeping for billion years if code is too fast
+			//SDL_Delay(10-(end-start));
+		}
 	}
 
 	return 0;

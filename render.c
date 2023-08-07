@@ -1,5 +1,4 @@
 SDL_Window *window;
-SDL_Surface *surface;
 SDL_Renderer *renderer;
 SDL_Texture *texture;
 unsigned char screen[WORLD_HEIGHT][WORLD_WIDTH][4]; // consider that the struct probably alligns this correctly anyway
@@ -9,11 +8,7 @@ int cur_frame_index = 0;
 
 void init_render()
 {
-	int res = SDL_Init(0);
-	if (res)
-	{
-		printf("!!!\n");
-	}
+	SDL_Init(0);
 	window = SDL_CreateWindow("Sand Sim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	renderer = SDL_CreateRenderer(window, -1, 0); // 0 is def wrong flags, but i dont know which ones are right
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, WORLD_WIDTH, WORLD_HEIGHT);
@@ -21,7 +16,6 @@ void init_render()
 
 void display()
 {
-	surface = SDL_GetWindowSurface(window); // SDL gets really angy if you reuse this
 	unsigned long int start = cur_time();
 	for (int x = 0; x < WORLD_WIDTH; x++)
 	{
@@ -47,8 +41,5 @@ void display()
 	}
 	float last_frame_mean_time = ((float)sum_time) / 60.0f;
 	printf("frame: %fms\n", last_frame_mean_time);
-	SDL_RenderPresent(renderer);
-	// printf("%s\n",SDL_GetError());
-	//  printf("frame: %fms\n", last_frame_ms_mean_time);
 	SDL_RenderPresent(renderer);
 }
