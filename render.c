@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-void setup()
-{
-}
+SDL_Window *window;
+SDL_Surface *surface;
 
 unsigned long int frame_times[60];
 int cur_frame_index = 0;
@@ -35,7 +34,7 @@ void display()
 			screen[y][x][3] = 0xff;
 		}
 	}
-	printf("place: %fms\n", ((float)(cur_time() - start)) / 1000.0f);
+	//printf("place: %fms\n", ((float)(cur_time() - start)) / 1000.0f);
 	frame_times[cur_frame_index] = cur_time() - start;
 	cur_frame_index += 1;
 	cur_frame_index = cur_frame_index % 60;
@@ -46,5 +45,6 @@ void display()
 	}
 	float last_frame_mean_time = ((float)sum_time) / 60.0f;
 	float last_frame_ms_mean_time = last_frame_mean_time / 1000.0f;
-	printf("frame: %fms\n", last_frame_ms_mean_time);
+	//printf("frame: %fms\n", last_frame_ms_mean_time);
+	SDL_UpdateWindowSurface(window);
 }
