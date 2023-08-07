@@ -1,13 +1,10 @@
 #include <timezoneapi.h>
 
-#define SCREEN_WIDTH 400
+#define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 400
 #define PIXEL_SIZE 1
 #define WORLD_WIDTH (SCREEN_WIDTH / PIXEL_SIZE)
 #define WORLD_HEIGHT (SCREEN_HEIGHT / PIXEL_SIZE)
-
-struct timespec time_spec;
-struct timespec *time_handle;
 
 struct colour
 {
@@ -73,54 +70,29 @@ LARGE_INTEGER getFILETIMEoffset()
 }
 
 #ifdef _WIN32
-int clock_gettime(int X, struct timeval *tv)
+struct timespec
 {
-	LARGE_INTEGER t;
-	FILETIME f;
-	double microseconds;
-	static LARGE_INTEGER offset;
-	static double frequencyToMicroseconds;
-	static int initialized = 0;
-	static int usePerformanceCounter = 0;
-
-	if (!initialized)
-	{
-		LARGE_INTEGER performanceFrequency;
-		initialized = 1;
-		usePerformanceCounter = QueryPerformanceFrequency(&performanceFrequency);
-		if (usePerformanceCounter)
-		{
-			QueryPerformanceCounter(&offset);
-			frequencyToMicroseconds = (double)performanceFrequency.QuadPart / 1000000.;
-		}
-		else
-		{
-			offset = getFILETIMEoffset();
-			frequencyToMicroseconds = 10.;
-		}
-	}
-	if (usePerformanceCounter)
-		QueryPerformanceCounter(&t);
-	else
-	{
-		GetSystemTimeAsFileTime(&f);
-		t.QuadPart = f.dwHighDateTime;
-		t.QuadPart <<= 32;
-		t.QuadPart |= f.dwLowDateTime;
-	}
-
-	t.QuadPart -= offset.QuadPart;
-	microseconds = (double)t.QuadPart / frequencyToMicroseconds;
-	t.QuadPart = microseconds;
-	tv->tv_sec = t.QuadPart / 1000000;
-	tv->tv_usec = t.QuadPart % 1000000;
-	return (0);
+	long tv_sec;
+	long tv_nsec;
+};											  // header part
+int clock_gettime(int _, struct timespec *spec) // C-file part
+{
+	__int64 wintime;
+	GetSystemTimeAsFileTime((FILETIME *)&wintime);
+	wintime -= 116444736000000000i64;			 // 1jan1601 to 1jan1970
+	spec->tv_sec = wintime / 10000000i64;		 // seconds
+	spec->tv_nsec = wintime % 10000000i64 * 100; // nano-seconds
+	return 0;
 }
 #endif
+
+struct timespec time_spec;
+struct timespec *time_handle;
 
 // unix microseconds
 unsigned long int cur_time()
 {
+
 	clock_gettime(0, time_handle);
 	return time_spec.tv_sec * 1000 + time_spec.tv_nsec / 1000000;
 }

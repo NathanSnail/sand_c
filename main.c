@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+// #include <time.h>
 #include <windows.h>
 
 #define SDL_MAIN_HANDLED
@@ -38,19 +38,26 @@ int main(int argc, char *argv[])
 	SDL_GetError();
 	init_world();
 	init_render();
-	
-	while (1) {
+	unsigned long loop_count = 0;
+	while (1)
+	{
+		printf("%lu\n", cur_time());
 		int quit = handle_input();
-		if(quit) {break;}
-		for(int i = 0; i < 12; i++) {
-			world[i*35][WORLD_HEIGHT-1] = get_particle(1);
+		if (quit)
+		{
+			break;
 		}
-		for(int i = 0; i < 12; i++) {
-			world[i*35+5][WORLD_HEIGHT-100] = get_particle(2);
+		for (int i = 0; i < 12; i++)
+		{
+			world[i * 35][WORLD_HEIGHT - 1] = get_particle(1);
+		}
+		for (int i = 0; i < 12; i++)
+		{
+			world[i * 35 + 5][WORLD_HEIGHT - 100] = get_particle(2);
 		}
 		tick();
 		display();
-	}	
+	}
 
 	return 0;
 }
