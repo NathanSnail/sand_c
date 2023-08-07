@@ -4,14 +4,30 @@
 
 SDL_Window *window;
 SDL_Surface *surface;
+SDL_Renderer *renderer;
+SDL_Texture *texture;
+SDL_Rect *texture_rect;
+unsigned char screen[WORLD_HEIGHT][WORLD_WIDTH][4]; // consider that the struct probably alligns this correctly anyway
 
 unsigned long int frame_times[60];
 int cur_frame_index = 0;
 
-unsigned char screen[SCREEN_HEIGHT / PIXEL_SIZE][SCREEN_WIDTH / PIXEL_SIZE][4]; // consider that the struct probably alligns this correctly anyway
+void init_render()
+{
+	SDL_Init(0);
+	window = SDL_CreateWindow("Sand Sim",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
+	renderer = SDL_CreateRenderer(window,-1,0); // 0 is def wrong flags, but i dont know which ones are right
+	texture = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_RGBA8888,SDL_TEXTUREACCESS_STREAMING,WORLD_WIDTH,WORLD_HEIGHT);
+	texture_rect = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+	texture_rect->x = 0;
+	texture_rect->y = 0;
+	texture_rect->w = WORLD_WIDTH;
+	texture_rect->h = WORLD_HEIGHT;
+}
 
 void display()
 {
+	surface = SDL_GetWindowSurface(window); //SDL gets really angy if you reuse this
 	unsigned long int start = cur_time();
 	// for (int x = 0; x < SCREEN_WIDTH; x++)
 	// {
@@ -34,6 +50,8 @@ void display()
 			screen[y][x][3] = 0xff;
 		}
 	}
+	SDL_RenderCopy(renderer,texture,NULL,&texture_rect);
+
 	//printf("place: %fms\n", ((float)(cur_time() - start)) / 1000.0f);
 	frame_times[cur_frame_index] = cur_time() - start;
 	cur_frame_index += 1;
@@ -47,4 +65,5 @@ void display()
 	float last_frame_ms_mean_time = last_frame_mean_time / 1000.0f;
 	//printf("frame: %fms\n", last_frame_ms_mean_time);
 	SDL_UpdateWindowSurface(window);
+	printf("%s\n",SDL_GetError());
 }

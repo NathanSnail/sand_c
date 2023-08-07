@@ -29,27 +29,13 @@ void init_world()
 	}
 }
 
-int res;
-int res_n = 0;
-
-void test() {
-	res_n++;
-	if (res == -1) {
-		printf("crash! @ %d\n",res_n);
-	}
-}
-
 int main(int argc, char **argv)
 {
 	time_handle = &time;
 	srand((unsigned)gettimeofday(time_handle, NULL));
 	
 	init_world();
-	
-	res = SDL_Init(0);
-	test();
-	window = SDL_CreateWindow("Sand Sim",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
-	surface = SDL_GetWindowSurface(window);
+	init_render();
 	
 	while (1) {
 		int quit = handle_input();
