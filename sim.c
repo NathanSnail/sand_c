@@ -42,6 +42,7 @@ int tick_powder(int x, int y, struct particle *cur)
 			return 0;
 		}
 	}
+	return 0;
 }
 
 void tick_liquid(int x, int y, struct particle *cur)
@@ -125,54 +126,83 @@ void tick_gas(int x, int y, struct particle *cur)
 	}
 }
 
-uint64_t tick_times[60];
+unsigned long int tick_times[60];
 int cur_tick_index = 0;
 
-void tick()
+void tick_pos(int x, int y)
 {
-	world[0][WORLD_HEIGHT-1] = get_particle(1);
-	world[WORLD_WIDTH-1][WORLD_HEIGHT-1] = get_particle(2);
-	uint64_t start = cur_time();
-	glutPostRedisplay();
-	for (int y = 0; y < WORLD_HEIGHT; y++)
+
+	struct particle cur = world[x][y];
+	if (cur.ticked)
+	{
+		return;
+	}
+	switch (types[cur.mat])
+	{
+	case AIR:
+		break;
+	case POWDER:
+		tick_powder(x, y, &cur);
+		break;
+	case LIQUID:
+		tick_liquid(x, y, &cur);
+		break;
+	case GAS:
+		tick_gas(x, y, &cur);
+		break;
+	case STATIC:
+		break;
+	default:
+		printf("invalid material @ %d %d", x, y);
+		fflush(stdout);
+		world[x][y] = get_particle(0);
+	}
+}
+
+void x_handler(int y)
+{
+	if (cur_tick_index % 4 > 2)
+	{
+		for (int x = WORLD_WIDTH - 1; x >= 0; x--)
+		{
+			tick_pos(x, y);
+		}
+	}
+	else
 	{
 		for (int x = 0; x < WORLD_WIDTH; x++)
 		{
-			struct particle cur = world[x][y];
-			if (cur.ticked)
-			{
-				continue;
-			}
-			switch (types[cur.mat])
-			{
-			case AIR:
-				break;
-			case POWDER:
-				tick_powder(x, y, &cur);
-				break;
-			case LIQUID:
-				tick_liquid(x, y, &cur);
-				break;
-			case GAS:
-				tick_gas(x, y, &cur);
-				break;
-			case STATIC:
-				break;
-			default:
-				printf("invalid material @ %d %d", x, y);
-				fflush(stdout);
-				world[x][y] = get_particle(0);
-			}
+			tick_pos(x, y);
 		}
 	}
+}
+
+void tick()
+{
+	unsigned long int start = cur_time();
 	for (int y = 0; y < WORLD_HEIGHT; y++)
 	{
+
 		for (int x = 0; x < WORLD_WIDTH; x++)
 		{
 			world[x][y].ticked = 0;
 		}
 	}
-	glutTimerFunc(0, tick, 0);
+
+	if (cur_tick_index % 2 != 0)
+	{
+		for (int y = WORLD_HEIGHT - 1; y >= 0; y--)
+		{
+			x_handler(y);
+		}
+	}
+	else
+	{
+		for (int y = 0; y < WORLD_HEIGHT; y++)
+		{
+			x_handler(y);
+		}
+	}
 	tick_times[cur_tick_index] = cur_time() - start;
 	cur_tick_index += 1;
 	cur_tick_index = cur_tick_index % 60;
@@ -181,7 +211,6 @@ void tick()
 	{
 		sum_time += tick_times[i];
 	}
-	float last_frame_mean_time = ((float)sum_time) / 60.0f;
-	float last_tick_ms_mean_time = last_frame_mean_time / 1000.0f;
-	printf("tick:  %fms\n", last_tick_ms_mean_time);
+	float last_tick_mean_time = ((float)sum_time) / 60.0f;
+	printf("tick:  %fms\n", last_tick_mean_time);
 }

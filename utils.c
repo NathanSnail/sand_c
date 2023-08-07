@@ -1,11 +1,10 @@
+#include <timezoneapi.h>
+
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 400
 #define PIXEL_SIZE 5
 #define WORLD_WIDTH (SCREEN_WIDTH / PIXEL_SIZE)
 #define WORLD_HEIGHT (SCREEN_HEIGHT / PIXEL_SIZE)
-
-struct timespec time;
-struct timespec *time_handle;
 
 struct colour
 {
@@ -17,7 +16,7 @@ struct colour
 
 struct particle
 {
-	uint mat;
+	unsigned int mat;
 	struct colour col;
 	int ticked;
 };
@@ -41,7 +40,7 @@ struct colour new_colour(float red, float green, float blue, float alpha)
 	return col;
 }
 
-struct particle new_particle(struct colour col, uint mat)
+struct particle new_particle(struct colour col, unsigned int mat)
 {
 	struct particle created;
 	created.col = col;
@@ -50,11 +49,52 @@ struct particle new_particle(struct colour col, uint mat)
 	return created;
 }
 
-// unix microseconds
-uint64_t cur_time()
+LARGE_INTEGER getFILETIMEoffset()
 {
-	clock_gettime(NULL, time_handle);
-	return time.tv_sec * 1000000 + time.tv_nsec / 1000;
+	SYSTEMTIME s;
+	FILETIME f;
+	LARGE_INTEGER t;
+
+	s.wYear = 1970;
+	s.wMonth = 1;
+	s.wDay = 1;
+	s.wHour = 0;
+	s.wMinute = 0;
+	s.wSecond = 0;
+	s.wMilliseconds = 0;
+	SystemTimeToFileTime(&s, &f);
+	t.QuadPart = f.dwHighDateTime;
+	t.QuadPart <<= 32;
+	t.QuadPart |= f.dwLowDateTime;
+	return (t);
+}
+
+#ifdef _WIN32
+struct timespec
+{
+	long tv_sec;
+	long tv_nsec;
+};											  // header part
+int clock_gettime(int _, struct timespec *spec) // C-file part
+{
+	__int64 wintime;
+	GetSystemTimeAsFileTime((FILETIME *)&wintime);
+	wintime -= 116444736000000000i64;			 // 1jan1601 to 1jan1970
+	spec->tv_sec = wintime / 10000000i64;		 // seconds
+	spec->tv_nsec = wintime % 10000000i64 * 100; // nano-seconds
+	return 0;
+}
+#endif
+
+struct timespec time_spec;
+struct timespec *time_handle;
+
+// unix microseconds
+unsigned long int cur_time()
+{
+
+	clock_gettime(0, time_handle);
+	return time_spec.tv_sec * 1000 + time_spec.tv_nsec / 1000000;
 }
 
 float randf()
