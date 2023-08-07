@@ -36,21 +36,24 @@ int main(int argc, char *argv[])
 	time_handle = &time_spec;
 	srand(((long int)cur_time) % (1 << 31));
 	SDL_GetError();
+	printf("aa\n");
 	init_world();
 	init_render();
 	unsigned long loop_count = 0;
 	while (1)
 	{
 		int quit = handle_input();
+		printf("aa\n");
 		if (quit)
 		{
+			printf("Quitting!\n");
 			break;
 		}
-		for (int i = 0; i < 12; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			world[i * 35][WORLD_HEIGHT - 1] = get_particle(1);
 		}
-		for (int i = 0; i < 12; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			world[i * 35 + 5][WORLD_HEIGHT - 100] = get_particle(2);
 		}
