@@ -1,0 +1,1 @@
+cl /I "C:\bin\SDLVC\include" main.c "C:\bin\SDLVC\lib\x86\SDL2.lib"

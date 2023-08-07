@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/time.h>
+#include <time.h>
+#include <windows.h>
 
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
+#undef main
 
 #include "utils.c"
 #include "material_defs.c"
@@ -29,11 +31,11 @@ void init_world()
 	}
 }
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
-	time_handle = &time;
-	srand((unsigned)gettimeofday(time_handle, NULL));
-	
+	time_handle = &time_spec;
+	srand(((long int)cur_time) % (1 << 31));
+	SDL_GetError();
 	init_world();
 	init_render();
 	
