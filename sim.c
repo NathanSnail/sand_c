@@ -159,20 +159,49 @@ void tick_pos(int x, int y)
 	}
 }
 
-void x_handler(int y)
+void x_handler(int y, int bx, int by)
 {
 	if (cur_tick_index % 4 > 2)
 	{
-		for (int x = WORLD_WIDTH - 1; x >= 0; x--)
+		for (int x = CHUNK_SIZE - 1; x >= 0; x--)
 		{
-			tick_pos(x, y);
+			tick_pos(x + bx * CHUNK_SIZE, y + by * CHUNK_SIZE);
 		}
 	}
 	else
 	{
-		for (int x = 0; x < WORLD_WIDTH; x++)
+		for (int x = 0; x < CHUNK_SIZE; x++)
 		{
-			tick_pos(x, y);
+			tick_pos(x + bx * CHUNK_SIZE, y + by * CHUNK_SIZE);
+		}
+	}
+}
+
+void tick_chunk(int bx, int by)
+{
+	if (cur_tick_index % 2 != 0)
+	{
+		for (int y = CHUNK_SIZE - 1; y >= 0; y--)
+		{
+			x_handler(y, bx, by);
+		}
+	}
+	else
+	{
+		for (int y = 0; y < CHUNK_SIZE; y++)
+		{
+			x_handler(y, bx, by);
+		}
+	}
+}
+
+void tick_grid(int parity_x, int parity_y)
+{
+	for (int bx = parity_x; bx < (NUM_CHUNKS_X + 1 + parity_x) / 2; bx++)
+	{
+		for (int by = parity_y; by < (NUM_CHUNKS_Y + 1 + parity_y) / 2; by++)
+		{
+			tick_chunk(bx * 2 - parity_x, by * 2 - parity_y);
 		}
 	}
 }
@@ -180,6 +209,13 @@ void x_handler(int y)
 void tick()
 {
 	unsigned long int start = cur_time();
+	for (int px = 0; px < 2; px++)
+	{
+		for (int py = 0; py < 2; py++)
+		{
+			tick_grid(px, py);
+		}
+	}
 	for (int y = 0; y < WORLD_HEIGHT; y++)
 	{
 
@@ -189,20 +225,6 @@ void tick()
 		}
 	}
 
-	if (cur_tick_index % 2 != 0)
-	{
-		for (int y = WORLD_HEIGHT - 1; y >= 0; y--)
-		{
-			x_handler(y);
-		}
-	}
-	else
-	{
-		for (int y = 0; y < WORLD_HEIGHT; y++)
-		{
-			x_handler(y);
-		}
-	}
 	tick_times[cur_tick_index] = cur_time() - start;
 	cur_tick_index += 1;
 	cur_tick_index = cur_tick_index % 60;
@@ -212,7 +234,7 @@ void tick()
 		sum_time += tick_times[i];
 	}
 	float last_tick_mean_time = ((float)sum_time) / 60.0f;
-	#ifdef DEBUG
+#ifdef DEBUG
 	printf("tick:  %fms\n", last_tick_mean_time);
-	#endif
+#endif
 }

@@ -11,7 +11,7 @@
 #include <SDL.h>
 #undef main
 
-//#define DEBUG
+// #define DEBUG
 
 #include "utils.c"
 #include "material_defs.c"
@@ -67,11 +67,14 @@ int main(int argc, char *argv[])
 		tick();
 		display();
 		unsigned long end = cur_time();
-		if (end > start) { // stop sleeping for billion years if code is too fast
+		if (end > start)
+		{	// stop sleeping for billion years if code is too fast
 			// SDL_Delay(10-min(end-start,10));
 		}
-		if(loop_count%10==0) {
-			printf("%fFPS total\n",((float)loop_count)/((float)(cur_time()-ran)/1000.0f));
+		// SDL_Delay(1000);
+		if (loop_count % 10 == 0)
+		{
+			printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
 		}
 	}
 
