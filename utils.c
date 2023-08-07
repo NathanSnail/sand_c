@@ -79,3 +79,7 @@ float randf()
 {
 	return ((float)rand()) / ((float)(RAND_MAX));
 }
+
+unsigned long min(unsigned long a, unsigned long b) {
+	return (a > b) ? b : a;
+}

@@ -212,5 +212,7 @@ void tick()
 		sum_time += tick_times[i];
 	}
 	float last_tick_mean_time = ((float)sum_time) / 60.0f;
+	#ifdef DEBUG
 	printf("tick:  %fms\n", last_tick_mean_time);
+	#endif
 }

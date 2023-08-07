@@ -28,7 +28,9 @@ void display()
 			screen[WORLD_HEIGHT - y - 1][x][3] = (unsigned char)(cur_col.alpha * 255.9);
 		}
 	}
+	#ifdef DEBUG
 	printf("place: %fms\n", ((float)(cur_time() - start)));
+	#endif
 	SDL_UpdateTexture(texture, NULL, screen, 4 * WORLD_WIDTH);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	frame_times[cur_frame_index] = cur_time() - start;
@@ -40,6 +42,8 @@ void display()
 		sum_time += frame_times[i];
 	}
 	float last_frame_mean_time = ((float)sum_time) / 60.0f;
+	#ifdef DEBUG
 	printf("frame: %fms\n", last_frame_mean_time);
+	#endif
 	SDL_RenderPresent(renderer);
 }

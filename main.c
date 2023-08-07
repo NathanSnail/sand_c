@@ -10,6 +10,8 @@
 #include <SDL.h>
 #undef main
 
+//#define DEBUG
+
 #include "utils.c"
 #include "material_defs.c"
 #include "sim.c"
@@ -42,8 +44,10 @@ int main(int argc, char *argv[])
 	init_world();
 	init_render();
 	unsigned long loop_count = 0;
+	unsigned long ran = cur_time();
 	while (1)
 	{
+		loop_count++;
 		unsigned long start = cur_time();
 		int quit = handle_input();
 		if (quit)
@@ -63,7 +67,10 @@ int main(int argc, char *argv[])
 		display();
 		unsigned long end = cur_time();
 		if (end > start) { // stop sleeping for billion years if code is too fast
-			//SDL_Delay(10-(end-start));
+			SDL_Delay(10-min(end-start,10));
+		}
+		if(loop_count%10==0) {
+			printf("%fFPS total\n",((float)loop_count)/((float)(cur_time()-ran)/1000.0f));
 		}
 	}
 
