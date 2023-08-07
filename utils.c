@@ -1,9 +1,9 @@
 #define SCREEN_WIDTH 1000
-#define SCREEN_HEIGHT 500
+#define SCREEN_HEIGHT 1000
 #define PIXEL_SIZE 1
 #define WORLD_WIDTH (SCREEN_WIDTH / PIXEL_SIZE)
 #define WORLD_HEIGHT (SCREEN_HEIGHT / PIXEL_SIZE)
-#define CHUNK_SIZE 10
+#define CHUNK_SIZE 100
 #define NUM_CHUNKS_X (WORLD_WIDTH/CHUNK_SIZE)
 #define NUM_CHUNKS_Y (WORLD_HEIGHT/CHUNK_SIZE)
 
@@ -50,12 +50,7 @@ struct particle new_particle(struct colour col, unsigned int mat)
 	return created;
 }
 
-#ifdef _WIN32
-struct timespec
-{
-	long tv_sec;
-	long tv_nsec;
-};												// header part
+#ifdef _WIN32										// header part
 int clock_gettime(int _, struct timespec *spec) // C-file part
 {
 	__int64 wintime;

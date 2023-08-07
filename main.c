@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <pthread.h>
 #ifdef _WIN32
 #include <windows.h>
 // #include <timezone.h>
@@ -37,6 +38,15 @@ void init_world()
 	}
 }
 
+void *test(void *thread_arg)
+{
+	while (cur_time() < rand())
+	{
+	}
+	printf("a %d\n", *((int *)thread_arg));
+	return NULL;
+}
+
 int main(int argc, char *argv[])
 {
 	time_handle = &time_spec;
@@ -46,6 +56,20 @@ int main(int argc, char *argv[])
 	init_render();
 	unsigned long loop_count = 0;
 	unsigned long ran = cur_time();
+	pthread_t id[12]; // create a pool
+	int args[12];
+	for (int i = 0; i < 12; i++)
+	{
+		args[i] = i;
+		pthread_create(&id[i], NULL, (void *(*)(void *))test, &args[i]); // dispatch threads
+	}
+	for (int i = 0; i < 12; i++)
+	{
+		pthread_join(id[i], NULL); // await threads
+		printf("done waiting for %d\n", i);
+	}
+	printf("done waiting\n");
+	exit(0);
 	while (1)
 	{
 		loop_count++;
@@ -68,8 +92,8 @@ int main(int argc, char *argv[])
 		display();
 		unsigned long end = cur_time();
 		if (end > start)
-		{	// stop sleeping for billion years if code is too fast
-			// SDL_Delay(10-min(end-start,10));
+		{ // stop sleeping for billion years if code is too fast
+		  // SDL_Delay(10-min(end-start,10));
 		}
 		// SDL_Delay(1000);
 		if (loop_count % 10 == 0)
