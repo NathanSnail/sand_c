@@ -42,6 +42,7 @@ int tick_powder(int x, int y, struct particle *cur)
 			return 0;
 		}
 	}
+	return 0;
 }
 
 void tick_liquid(int x, int y, struct particle *cur)
@@ -177,7 +178,6 @@ void tick()
 	{
 		sum_time += tick_times[i];
 	}
-	float last_frame_mean_time = ((float)sum_time) / 60.0f;
-	float last_tick_ms_mean_time = last_frame_mean_time / 1000.0f;
-	printf("tick:  %fms\n", last_tick_ms_mean_time);
+	float last_tick_mean_time = ((float)sum_time) / 60.0f;
+	printf("tick:  %fms\n", last_tick_mean_time);
 }
