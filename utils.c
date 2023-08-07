@@ -52,7 +52,7 @@ struct timespec
 {
 	long tv_sec;
 	long tv_nsec;
-};											  // header part
+};												// header part
 int clock_gettime(int _, struct timespec *spec) // C-file part
 {
 	__int64 wintime;
@@ -80,6 +80,5 @@ float randf()
 	return ((float)rand()) / ((float)(RAND_MAX));
 }
 
-unsigned long min(unsigned long a, unsigned long b) {
-	return (a > b) ? b : a;
-}
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
