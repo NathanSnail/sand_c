@@ -16,23 +16,13 @@ void init_render()
 	SDL_Init(0);
 	window = SDL_CreateWindow("Sand Sim",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
 	renderer = SDL_CreateRenderer(window,-1,0); // 0 is def wrong flags, but i dont know which ones are right
-	texture = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_RGBA8888,SDL_TEXTUREACCESS_STREAMING,WORLD_WIDTH,WORLD_HEIGHT);
+	texture = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_RGBA32,SDL_TEXTUREACCESS_STREAMING,WORLD_WIDTH,WORLD_HEIGHT);
 }
 
 void display()
 {
 	surface = SDL_GetWindowSurface(window); //SDL gets really angy if you reuse this
 	unsigned long int start = cur_time();
-	// for (int x = 0; x < SCREEN_WIDTH; x++)
-	// {
-	// 	for (int y = 0; y < SCREEN_HEIGHT; y++)
-	// 	{
-	// 		for (int c = 0; c < 4; c++)
-	// 		{
-	// 			screen[x][y][c] = 0x00;
-	// 		}
-	// 	}
-	// }
 	for (int x = 0; x < SCREEN_WIDTH / PIXEL_SIZE; x++)
 	{
 		for (int y = 0; y < SCREEN_HEIGHT / PIXEL_SIZE; y++)
