@@ -128,6 +128,33 @@ void tick_gas(int x, int y, struct particle *cur)
 unsigned long int tick_times[60];
 int cur_tick_index = 0;
 
+void tick_pos(int x, int y) {
+
+	struct particle cur = world[x][y];
+	if (cur.ticked) {
+		return;
+	}
+	switch (types[cur.mat]) {
+		case AIR:
+			break;
+		case POWDER:
+			tick_powder(x, y, &cur);
+			break;
+		case LIQUID:
+			tick_liquid(x, y, &cur);
+			break;
+		case GAS:
+			tick_gas(x, y, &cur);
+			break;
+		case STATIC:
+			break;
+		default:
+			printf("invalid material @ %d %d", x, y);
+			fflush(stdout);
+			world[x][y] = get_particle(0);
+	}
+}
+
 void tick()
 {
 	unsigned long int start = cur_time();
@@ -135,31 +162,7 @@ void tick()
 	{
 		for (int x = 0; x < WORLD_WIDTH; x++)
 		{
-			struct particle cur = world[x][y];
-			if (cur.ticked)
-			{
-				continue;
-			}
-			switch (types[cur.mat])
-			{
-			case AIR:
-				break;
-			case POWDER:
-				tick_powder(x, y, &cur);
-				break;
-			case LIQUID:
-				tick_liquid(x, y, &cur);
-				break;
-			case GAS:
-				tick_gas(x, y, &cur);
-				break;
-			case STATIC:
-				break;
-			default:
-				printf("invalid material @ %d %d", x, y);
-				fflush(stdout);
-				world[x][y] = get_particle(0);
-			}
+			tick_pos(x,y);
 		}
 	}
 	for (int y = 0; y < WORLD_HEIGHT; y++)

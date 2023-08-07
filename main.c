@@ -40,6 +40,13 @@ int main(int argc, char **argv)
 	while (1) {
 		int quit = handle_input();
 		if(quit) {break;}
+		for(int i = 0; i < 12; i++) {
+			world[i*35][WORLD_HEIGHT-1] = get_particle(1);
+		}
+		for(int i = 0; i < 12; i++) {
+			world[i*35+5][WORLD_HEIGHT-100] = get_particle(2);
+		}
+		tick();
 		display();
 	}	
 
