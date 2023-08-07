@@ -1,5 +1,3 @@
-#include <timezoneapi.h>
-
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 400
 #define PIXEL_SIZE 5
@@ -47,26 +45,6 @@ struct particle new_particle(struct colour col, unsigned int mat)
 	created.mat = mat;
 	created.ticked = 0;
 	return created;
-}
-
-LARGE_INTEGER getFILETIMEoffset()
-{
-	SYSTEMTIME s;
-	FILETIME f;
-	LARGE_INTEGER t;
-
-	s.wYear = 1970;
-	s.wMonth = 1;
-	s.wDay = 1;
-	s.wHour = 0;
-	s.wMinute = 0;
-	s.wSecond = 0;
-	s.wMilliseconds = 0;
-	SystemTimeToFileTime(&s, &f);
-	t.QuadPart = f.dwHighDateTime;
-	t.QuadPart <<= 32;
-	t.QuadPart |= f.dwLowDateTime;
-	return (t);
 }
 
 #ifdef _WIN32

@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include <time.h>
+#ifdef _WIN32
 #include <windows.h>
-
+#include <timezone.h>
+#else
+#include <sys/time.h>
+#endif
 #define SDL_MAIN_HANDLED
 #include <SDL.h>
 #undef main
