@@ -6,15 +6,15 @@ pthread_t threads[12];
 
 struct particle world[WORLD_WIDTH][WORLD_HEIGHT];
 
-int tick_powder(int x, int y, struct particle *cur)
+int tick_powder(int x, int y, struct particle cur)
 {
 	if (y > 0)
 	{
-		if (density[cur->mat] > density[world[x][y - 1].mat])
+		if (density[cur.mat] > density[world[x][y - 1].mat])
 		{
 			struct particle temp = world[x][y - 1];
-			cur->ticked = 1;
-			world[x][y - 1] = *cur;
+			cur.ticked = 1;
+			world[x][y - 1] = cur;
 			world[x][y] = temp;
 			return 1;
 		}
@@ -35,11 +35,11 @@ int tick_powder(int x, int y, struct particle *cur)
 			}
 			dir = -1;
 		}
-		if (density[cur->mat] > density[world[x + dir][y - 1].mat])
+		if (density[cur.mat] > density[world[x + dir][y - 1].mat])
 		{
 			struct particle temp = world[x + dir][y - 1];
-			cur->ticked = 1;
-			world[x + dir][y - 1] = *cur;
+			cur.ticked = 1;
+			world[x + dir][y - 1] = cur;
 			world[x][y] = temp;
 			return 1;
 		}
@@ -51,7 +51,7 @@ int tick_powder(int x, int y, struct particle *cur)
 	return 0;
 }
 
-void tick_liquid(int x, int y, struct particle *cur)
+void tick_liquid(int x, int y, struct particle cur)
 {
 	if (!tick_powder(x, y, cur))
 	{
@@ -72,28 +72,28 @@ void tick_liquid(int x, int y, struct particle *cur)
 			}
 			dir = -1;
 		}
-		if (density[cur->mat] > density[world[x + dir][y].mat])
+		if (density[cur.mat] > density[world[x + dir][y].mat])
 		{
 			struct particle temp = world[x + dir][y];
-			cur->ticked = 1;
-			world[x + dir][y] = *cur;
+			cur.ticked = 1;
+			world[x + dir][y] = cur;
 			world[x][y] = temp;
 			return;
 		}
 	}
 }
 
-void tick_gas(int x, int y, struct particle *cur)
+void tick_gas(int x, int y, struct particle cur)
 {
 	if (y >= WORLD_HEIGHT - 1)
 	{
 		return;
 	}
-	if (density[cur->mat] > density[world[x][y + 1].mat])
+	if (density[cur.mat] > density[world[x][y + 1].mat])
 	{
 		struct particle temp = world[x][y + 1];
-		cur->ticked = 1;
-		world[x][y + 1] = *cur;
+		cur.ticked = 1;
+		world[x][y + 1] = cur;
 		world[x][y] = temp;
 		return;
 	}
@@ -114,19 +114,19 @@ void tick_gas(int x, int y, struct particle *cur)
 		}
 		dir = -1;
 	}
-	if (density[cur->mat] > density[world[x + dir][y + 1].mat])
+	if (density[cur.mat] > density[world[x + dir][y + 1].mat])
 	{
 		struct particle temp = world[x + dir][y + 1];
-		cur->ticked = 1;
-		world[x + dir][y + 1] = *cur;
+		cur.ticked = 1;
+		world[x + dir][y + 1] = cur;
 		world[x][y] = temp;
 		return;
 	}
-	if (density[cur->mat] > density[world[x + dir][y].mat])
+	if (density[cur.mat] > density[world[x + dir][y].mat])
 	{
 		struct particle temp = world[x + dir][y];
-		cur->ticked = 1;
-		world[x + dir][y] = *cur;
+		cur.ticked = 1;
+		world[x + dir][y] = cur;
 		world[x][y] = temp;
 		return;
 	}
@@ -148,13 +148,13 @@ void tick_pos(int x, int y)
 	case AIR:
 		break;
 	case POWDER:
-		tick_powder(x, y, &cur);
+		tick_powder(x, y, cur);
 		break;
 	case LIQUID:
-		tick_liquid(x, y, &cur);
+		tick_liquid(x, y, cur);
 		break;
 	case GAS:
-		tick_gas(x, y, &cur);
+		tick_gas(x, y, cur);
 		break;
 	case STATIC:
 		break;
