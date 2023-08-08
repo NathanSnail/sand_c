@@ -1,5 +1,5 @@
 pthread_cond_t all_done;
-pthread_mutex_t queue_lock;
+pthread_mutex_t queue_lock = PTHREAD_MUTEX_INITIALIZER;
 int tick_owned = 0;
 struct pos queue[NUM_CHUNKS_X * NUM_CHUNKS_Y / 4];
 pthread_t threads[12];
@@ -214,6 +214,8 @@ void generate_queue(int parity_x, int parity_y)
 	}
 }
 
+int first_time = 1;
+
 void tick()
 {
 	printf("tick start\n");
@@ -222,20 +224,22 @@ void tick()
 	{
 		for (int py = 0; py < 2; py++)
 		{
-			pthread_mutex_lock(&queue_lock);
-			printf("begin\n");
-			generate_queue(px, py);
-			printf("queue genned\n");
-			pthread_mutex_lock(&queue_lock);
 			// int res = pthread_mutex_unlock(&queue_lock);
 			// printf("%d", res);
-			printf("ticked @ %d %d", px, py);
-			while (!tick_owned)
+			printf("ticked @ %d %d\n", px, py);
+			if (!first_time)
 			{
-				pthread_cond_wait(&all_done, &queue_lock);
+				while (!tick_owned)
+				{
+					pthread_cond_wait(&all_done, &queue_lock);
+				}
 			}
-			printf("awaited");
+			printf("awaited\n");
+			generate_queue(px, py);
+			printf("queue genned\n");
+			first_time = 0;
 			tick_owned = 0;
+			pthread_mutex_unlock(&queue_lock);
 		}
 	}
 	for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -268,10 +272,11 @@ void *thread_process(void *arg)
 	{
 		if (tick_owned)
 		{
-			printf("wrong owner\n");
 			continue;
 		}
-		pthread_mutex_lock(&queue_lock); // take mutex to wait for access to the queue
+		int res = pthread_mutex_lock(&queue_lock); // take mutex to wait for access to the queue
+		printf("%d\n", res);
+		printf("thread gaming\n");
 		int good = 1;
 		int searching = 1;
 		int target = -1;
@@ -282,13 +287,17 @@ void *thread_process(void *arg)
 				target = i;
 				break;
 			}
+		}
+		for (int i = 0; i < NUM_CHUNKS_X * NUM_CHUNKS_Y / 4; i++)
+		{
 			good = good && queue[i].state == DONE;
 		}
+		printf("got %d\n", target);
 		if (good)
 		{
+			printf("signalled!\n");
 			tick_owned = 1;
 			pthread_cond_signal(&all_done);
-			printf("signalled!\n");
 			pthread_mutex_unlock(&queue_lock);
 			continue;
 		}
@@ -298,8 +307,12 @@ void *thread_process(void *arg)
 			continue;
 		}
 		queue[target].state = PROCCESSING;
+		printf("set %d\n", target);
+		// vvvvv crashes for some reason.
 		pthread_mutex_unlock(&queue_lock); // we have registered our claim on the chunk now, don't need lock anymore.
+		printf("ticky %d\n", target);
 		tick_chunk(queue[target].x, queue[target].y);
+		printf("finished %d\n", target);
 		queue[target].state = DONE;
 	}
 	return NULL;
@@ -322,8 +335,8 @@ void init_sim()
 		}
 	}
 	generate_queue(0, 0);
-	pthread_mutex_init(&queue_lock, NULL);
 	pthread_cond_init(&all_done, NULL);
+	pthread_mutex_lock(&queue_lock);
 	tick_owned = 1;
 	for (int i = 0; i < 12; i++)
 	{
