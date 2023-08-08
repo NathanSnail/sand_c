@@ -209,7 +209,7 @@ void generate_queue(int parity_x, int parity_y)
 		for (int by = parity_y; by < (NUM_CHUNKS_Y + 1 + parity_y) / 2; by++)
 		{
 			c++;
-			queue[c] = new_pos(bx * 2 + parity_x, by * 2 + parity_y);
+			queue[c] = new_pos(bx * 2 - parity_x, by * 2 - parity_y);
 		}
 	}
 }
@@ -310,7 +310,7 @@ void *thread_process(void *arg)
 		printf("set %d\n", target);
 		// vvvvv crashes for some reason.
 		pthread_mutex_unlock(&queue_lock); // we have registered our claim on the chunk now, don't need lock anymore.
-		printf("ticky %d\n", target);
+		printf("ticky %d @ %d %d\n", target, queue[target].x, queue[target].y);
 		tick_chunk(queue[target].x, queue[target].y);
 		printf("finished %d\n", target);
 		queue[target].state = DONE;
