@@ -1,3 +1,9 @@
+pthread_cond_t all_done;
+pthread_mutex_t queue_lock;
+int tick_owned = 0;
+struct pos queue[NUM_CHUNKS_X * NUM_CHUNKS_Y / 4];
+pthread_t threads[12];
+
 struct particle world[WORLD_WIDTH][WORLD_HEIGHT];
 
 int tick_powder(int x, int y, struct particle *cur)
@@ -195,25 +201,41 @@ void tick_chunk(int bx, int by)
 	}
 }
 
-void tick_grid(int parity_x, int parity_y)
+void generate_queue(int parity_x, int parity_y)
 {
+	int c = 0;
 	for (int bx = parity_x; bx < (NUM_CHUNKS_X + 1 + parity_x) / 2; bx++)
 	{
 		for (int by = parity_y; by < (NUM_CHUNKS_Y + 1 + parity_y) / 2; by++)
 		{
-			tick_chunk(bx * 2 - parity_x, by * 2 - parity_y);
+			c++;
+			queue[c] = new_pos(bx * 2 + parity_x, by * 2 + parity_y);
 		}
 	}
 }
 
 void tick()
 {
+	printf("tick start\n");
 	unsigned long int start = cur_time();
 	for (int px = 0; px < 2; px++)
 	{
 		for (int py = 0; py < 2; py++)
 		{
-			tick_grid(px, py);
+			pthread_mutex_lock(&queue_lock);
+			printf("begin\n");
+			generate_queue(px, py);
+			printf("queue genned\n");
+			pthread_mutex_lock(&queue_lock);
+			// int res = pthread_mutex_unlock(&queue_lock);
+			// printf("%d", res);
+			printf("ticked @ %d %d", px, py);
+			while (!tick_owned)
+			{
+				pthread_cond_wait(&all_done, &queue_lock);
+			}
+			printf("awaited");
+			tick_owned = 0;
 		}
 	}
 	for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -237,4 +259,74 @@ void tick()
 #ifdef DEBUG
 	printf("tick:  %fms\n", last_tick_mean_time);
 #endif
+}
+
+void *thread_process(void *arg)
+{
+	printf("created\n");
+	while (1)
+	{
+		if (tick_owned)
+		{
+			printf("wrong owner\n");
+			continue;
+		}
+		pthread_mutex_lock(&queue_lock); // take mutex to wait for access to the queue
+		int good = 1;
+		int searching = 1;
+		int target = -1;
+		for (int i = 0; i < NUM_CHUNKS_X * NUM_CHUNKS_Y / 4; i++)
+		{
+			if (searching && queue[i].state == WAITING)
+			{
+				target = i;
+				break;
+			}
+			good = good && queue[i].state == DONE;
+		}
+		if (good)
+		{
+			tick_owned = 1;
+			pthread_cond_signal(&all_done);
+			printf("signalled!\n");
+			pthread_mutex_unlock(&queue_lock);
+			continue;
+		}
+		if (target == -1)
+		{
+			pthread_mutex_unlock(&queue_lock); // something something nested locking.
+			continue;
+		}
+		queue[target].state = PROCCESSING;
+		pthread_mutex_unlock(&queue_lock); // we have registered our claim on the chunk now, don't need lock anymore.
+		tick_chunk(queue[target].x, queue[target].y);
+		queue[target].state = DONE;
+	}
+	return NULL;
+}
+
+void init_sim()
+{
+	for (int x = 0; x < WORLD_WIDTH; x++)
+	{
+		for (int y = 0; y < WORLD_HEIGHT; y++)
+		{
+			if (abs(x - WORLD_WIDTH / 2) < 2 || randf() < 0.1)
+			{
+				world[x][y] = get_particle(3);
+			}
+			else
+			{
+				world[x][y] = get_particle(0);
+			}
+		}
+	}
+	generate_queue(0, 0);
+	pthread_mutex_init(&queue_lock, NULL);
+	pthread_cond_init(&all_done, NULL);
+	tick_owned = 1;
+	for (int i = 0; i < 12; i++)
+	{
+		pthread_create(&threads[i], NULL, thread_process, NULL); // dispatch threads
+	}
 }

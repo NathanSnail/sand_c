@@ -20,56 +20,29 @@
 #include "render.c"
 #include "input.c"
 
-void init_world()
-{
-	for (int x = 0; x < WORLD_WIDTH; x++)
-	{
-		for (int y = 0; y < WORLD_HEIGHT; y++)
-		{
-			if (abs(x - WORLD_WIDTH / 2) < 2 || randf() < 0.1)
-			{
-				world[x][y] = get_particle(3);
-			}
-			else
-			{
-				world[x][y] = get_particle(0);
-			}
-		}
-	}
-}
-
-void *test(void *thread_arg)
-{
-	while (cur_time() < rand())
-	{
-	}
-	printf("a %d\n", *((int *)thread_arg));
-	return NULL;
-}
-
 int main(int argc, char *argv[])
 {
-	time_handle = &time_spec;
 	srand(((long int)cur_time) % (1 << 31));
 	SDL_GetError();
-	init_world();
+	init_sim();
 	init_render();
 	unsigned long loop_count = 0;
 	unsigned long ran = cur_time();
-	pthread_t id[12]; // create a pool
-	int args[12];
-	for (int i = 0; i < 12; i++)
-	{
-		args[i] = i;
-		pthread_create(&id[i], NULL, (void *(*)(void *))test, &args[i]); // dispatch threads
-	}
-	for (int i = 0; i < 12; i++)
-	{
-		pthread_join(id[i], NULL); // await threads
-		printf("done waiting for %d\n", i);
-	}
-	printf("done waiting\n");
-	exit(0);
+	printf("Init Done.\n");
+	// pthread_t id[12]; // create a pool
+	// int args[12];
+	// for (int i = 0; i < 12; i++)
+	// {
+	// 	args[i] = i;
+	// 	pthread_create(&id[i], NULL, (void *(*)(void *))test, &args[i]); // dispatch threads
+	// }
+	// for (int i = 0; i < 12; i++)
+	// {
+	// 	pthread_join(id[i], NULL); // await threads
+	// 	printf("done waiting for %d\n", i);
+	// }
+	// printf("done waiting\n");
+	// exit(0);
 	while (1)
 	{
 		loop_count++;
@@ -80,14 +53,14 @@ int main(int argc, char *argv[])
 			printf("Quitting!\n");
 			break;
 		}
-		for (int i = 0; i < 4; i++)
-		{
-			world[i * 35][WORLD_HEIGHT - 1] = get_particle(1);
-		}
-		for (int i = 0; i < 4; i++)
-		{
-			world[i * 35 + 5][WORLD_HEIGHT - 100] = get_particle(2);
-		}
+		// for (int i = 0; i < 4; i++)
+		// {
+		// 	world[i * 35][WORLD_HEIGHT - 1] = get_particle(1);
+		// }
+		// for (int i = 0; i < 4; i++)
+		// {
+		// 	world[i * 35 + 5][WORLD_HEIGHT - 100] = get_particle(2);
+		// }
 		tick();
 		display();
 		unsigned long end = cur_time();
@@ -98,7 +71,7 @@ int main(int argc, char *argv[])
 		// SDL_Delay(1000);
 		if (loop_count % 10 == 0)
 		{
-			printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
+			// printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
 		}
 	}
 

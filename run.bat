@@ -1,1 +1,1 @@
-cl /O2 /I "C:\bin\SDLVC\include" main.c "C:\bin\SDLVC\lib\x86\SDL2.lib"
+cl /O2 /I "C:\bin\SDLVC\include" /I "C:\bin\pthread" main.c "C:\bin\SDLVC\lib\x86\SDL2.lib" "C:\bin\pthread\windows\VS2022\bin\Debug-Unicode-32bit-x86\pthread.lib"
