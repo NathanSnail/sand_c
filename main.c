@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 		// SDL_Delay(1000);
 		if (loop_count % 10 == 0)
 		{
-			// printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
+			printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
 		}
 	}
 

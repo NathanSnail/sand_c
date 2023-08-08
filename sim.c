@@ -208,8 +208,8 @@ void generate_queue(int parity_x, int parity_y)
 	{
 		for (int by = parity_y; by < (NUM_CHUNKS_Y + 1 + parity_y) / 2; by++)
 		{
-			c++;
 			queue[c] = new_pos(bx * 2 - parity_x, by * 2 - parity_y);
+			c++;
 		}
 	}
 }
@@ -218,7 +218,6 @@ int first_time = 1;
 
 void tick()
 {
-	printf("tick start\n");
 	unsigned long int start = cur_time();
 	for (int px = 0; px < 2; px++)
 	{
@@ -226,7 +225,6 @@ void tick()
 		{
 			// int res = pthread_mutex_unlock(&queue_lock);
 			// printf("%d", res);
-			printf("ticked @ %d %d\n", px, py);
 			if (!first_time)
 			{
 				while (!tick_owned)
@@ -234,9 +232,7 @@ void tick()
 					pthread_cond_wait(&all_done, &queue_lock);
 				}
 			}
-			printf("awaited\n");
 			generate_queue(px, py);
-			printf("queue genned\n");
 			first_time = 0;
 			tick_owned = 0;
 			pthread_mutex_unlock(&queue_lock);
@@ -275,14 +271,11 @@ void *thread_process(void *arg)
 			continue;
 		}
 		int res = pthread_mutex_lock(&queue_lock); // take mutex to wait for access to the queue
-		printf("%d\n", res);
-		printf("thread gaming\n");
 		int good = 1;
-		int searching = 1;
 		int target = -1;
 		for (int i = 0; i < NUM_CHUNKS_X * NUM_CHUNKS_Y / 4; i++)
 		{
-			if (searching && queue[i].state == WAITING)
+			if (queue[i].state == WAITING)
 			{
 				target = i;
 				break;
@@ -292,10 +285,8 @@ void *thread_process(void *arg)
 		{
 			good = good && queue[i].state == DONE;
 		}
-		printf("got %d\n", target);
 		if (good)
 		{
-			printf("signalled!\n");
 			tick_owned = 1;
 			pthread_cond_signal(&all_done);
 			pthread_mutex_unlock(&queue_lock);
@@ -307,12 +298,9 @@ void *thread_process(void *arg)
 			continue;
 		}
 		queue[target].state = PROCCESSING;
-		printf("set %d\n", target);
 		// vvvvv crashes for some reason.
 		pthread_mutex_unlock(&queue_lock); // we have registered our claim on the chunk now, don't need lock anymore.
-		printf("ticky %d @ %d %d\n", target, queue[target].x, queue[target].y);
 		tick_chunk(queue[target].x, queue[target].y);
-		printf("finished %d\n", target);
 		queue[target].state = DONE;
 	}
 	return NULL;
