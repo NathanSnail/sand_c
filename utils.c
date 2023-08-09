@@ -1,9 +1,9 @@
-#define SCREEN_WIDTH 1000
-#define SCREEN_HEIGHT 1000
-#define PIXEL_SIZE 1
+#define SCREEN_WIDTH 400
+#define SCREEN_HEIGHT 400
+#define PIXEL_SIZE 2
 #define WORLD_WIDTH (SCREEN_WIDTH / PIXEL_SIZE)
 #define WORLD_HEIGHT (SCREEN_HEIGHT / PIXEL_SIZE)
-#define CHUNK_SIZE 250
+#define CHUNK_SIZE 40
 #define NUM_CHUNKS_X (WORLD_WIDTH / CHUNK_SIZE)
 #define NUM_CHUNKS_Y (WORLD_HEIGHT / CHUNK_SIZE)
 
@@ -84,12 +84,19 @@ void clock_gettime() // C-file part
 	time_spec.tv_sec = wintime / 10000000i64;		 // seconds
 	time_spec.tv_nsec = wintime % 10000000i64 * 100; // nano-seconds
 }
+#else
+struct timespec time_spec;
+struct timespec *time_handle;
 #endif
 
 // unix microseconds
 unsigned long int cur_time()
 {
+	#ifdef _WIN32
 	clock_gettime();
+	#else
+	clock_gettime(0,time_handle);
+	#endif
 	return time_spec.tv_sec * 1000 + time_spec.tv_nsec / 1000000;
 }
 

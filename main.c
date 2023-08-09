@@ -22,6 +22,7 @@
 
 int main(int argc, char *argv[])
 {
+	time_handle = &time_spec;
 	srand(((long int)cur_time) % (1 << 31));
 	SDL_GetError();
 	init_sim();
