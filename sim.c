@@ -1,7 +1,8 @@
 pthread_cond_t all_done;
 pthread_mutex_t queue_lock = PTHREAD_MUTEX_INITIALIZER;
 int tick_owned = 0;
-struct pos queue[NUM_CHUNKS_X * NUM_CHUNKS_Y / 4];
+#define QUEUE_SIZE ((int)(((float)NUM_CHUNKS_X) / 2.0f)) * ((int)(((float)NUM_CHUNKS_Y) / 2.0f))
+struct pos queue[QUEUE_SIZE];
 pthread_t threads[12];
 
 struct particle world[WORLD_WIDTH][WORLD_HEIGHT];
@@ -204,12 +205,13 @@ void tick_chunk(int bx, int by)
 void generate_queue(int parity_x, int parity_y)
 {
 	int c = 0;
-	for (int bx = parity_x; bx < (NUM_CHUNKS_X + 1 + parity_x) / 2; bx++)
+	for (int bx = parity_x; bx < NUM_CHUNKS_X; bx += 2)
 	{
-		for (int by = parity_y; by < (NUM_CHUNKS_Y + 1 + parity_y) / 2; by++)
+		for (int by = parity_y; by < NUM_CHUNKS_Y; by += 2)
 		{
-			queue[c] = new_pos(bx * 2 - parity_x, by * 2 - parity_y);
+			queue[c] = new_pos(bx, by);
 			c++;
+			printf("%d %d\n", bx, by);
 		}
 	}
 }
@@ -273,7 +275,7 @@ void *thread_process(void *arg)
 		int res = pthread_mutex_lock(&queue_lock); // take mutex to wait for access to the queue
 		int good = 1;
 		int target = -1;
-		for (int i = 0; i < NUM_CHUNKS_X * NUM_CHUNKS_Y / 4; i++)
+		for (int i = 0; i < QUEUE_SIZE; i++)
 		{
 			if (queue[i].state == WAITING)
 			{
@@ -281,7 +283,7 @@ void *thread_process(void *arg)
 				break;
 			}
 		}
-		for (int i = 0; i < NUM_CHUNKS_X * NUM_CHUNKS_Y / 4; i++)
+		for (int i = 0; i < QUEUE_SIZE; i++)
 		{
 			good = good && queue[i].state == DONE;
 		}
