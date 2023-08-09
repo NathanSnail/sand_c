@@ -22,7 +22,9 @@
 
 int main(int argc, char *argv[])
 {
+	#ifndef _WIN32
 	time_handle = &time_spec;
+	#endif
 	srand(((long int)cur_time) % (1 << 31));
 	SDL_GetError();
 	init_sim();
