@@ -1,7 +1,7 @@
 pthread_cond_t all_done;
 pthread_mutex_t queue_lock = PTHREAD_MUTEX_INITIALIZER;
 int tick_owned = 0;
-#define QUEUE_SIZE ((int)(((float)NUM_CHUNKS_X) / 2.0f)) * ((int)(((float)NUM_CHUNKS_Y) / 2.0f))
+#define QUEUE_SIZE ((int)((((float)NUM_CHUNKS_X) / 2.0f)+0.999f)) * ((int)((((float)NUM_CHUNKS_Y) / 2.0f)+0.999f))
 struct pos queue[QUEUE_SIZE];
 pthread_t threads[12];
 
@@ -211,7 +211,6 @@ void generate_queue(int parity_x, int parity_y)
 		{
 			queue[c] = new_pos(bx, by);
 			c++;
-			printf("%d %d\n", bx, by);
 		}
 	}
 }
