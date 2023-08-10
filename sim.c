@@ -209,6 +209,7 @@ void generate_queue(int parity_x, int parity_y)
 	{
 		for (int by = parity_y; by < NUM_CHUNKS_Y; by += 2)
 		{
+			printf("%d %d\n",bx,by);
 			queue[c] = new_pos(bx, by);
 			c++;
 		}
@@ -231,6 +232,7 @@ void tick()
 				while (!tick_owned)
 				{
 					pthread_cond_wait(&all_done, &queue_lock);
+					printf("wakey wakey\n");
 				}
 			}
 			generate_queue(px, py);
@@ -267,11 +269,14 @@ void *thread_process(void *arg)
 	printf("created\n");
 	while (1)
 	{
+		int res = pthread_mutex_lock(&queue_lock); // take mutex to wait for access to the queue
+		printf("got lock\n");
 		if (tick_owned)
 		{
+			printf("dropping!\n");
+			pthread_mutex_unlock(&queue_lock);
 			continue;
 		}
-		int res = pthread_mutex_lock(&queue_lock); // take mutex to wait for access to the queue
 		int good = 1;
 		int target = -1;
 		for (int i = 0; i < QUEUE_SIZE; i++)
@@ -288,6 +293,7 @@ void *thread_process(void *arg)
 		}
 		if (good)
 		{
+			printf("signal\n");
 			tick_owned = 1;
 			pthread_cond_signal(&all_done);
 			pthread_mutex_unlock(&queue_lock);
