@@ -1,5 +1,7 @@
 pthread_cond_t all_done;
+pthread_cond_t tick_done;
 pthread_mutex_t queue_lock = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t tick_dummy_lock = PTHREAD_MUTEX_INITIALIZER;
 int tick_owned = 0;
 #define QUEUE_SIZE ((int)((((float)NUM_CHUNKS_X) / 2.0f)+0.999f)) * ((int)((((float)NUM_CHUNKS_Y) / 2.0f)+0.999f))
 struct pos queue[QUEUE_SIZE];
@@ -238,6 +240,9 @@ void tick()
 			generate_queue(px, py);
 			first_time = 0;
 			tick_owned = 0;
+			pthread_mutex_lock(&tick_dummy_lock);
+			pthread_cond_broadcast(&tick_done);
+			pthread_mutex_unlock(&tick_dummy_lock);
 			pthread_mutex_unlock(&queue_lock);
 		}
 	}
@@ -269,11 +274,16 @@ void *thread_process(void *arg)
 	printf("created\n");
 	while (1)
 	{
+		while(tick_owned)
+		{
+			pthread_cond_wait(&tick_done,&tick_dummy_lock);
+		}
+		pthread_mutex_unlock(&tick_dummy_lock);
 		int res = pthread_mutex_lock(&queue_lock); // take mutex to wait for access to the queue
 		printf("got lock\n");
 		if (tick_owned)
 		{
-			printf("dropping!\n");
+			printf("bad dropped!\n");
 			pthread_mutex_unlock(&queue_lock);
 			continue;
 		}
@@ -331,7 +341,9 @@ void init_sim()
 	}
 	generate_queue(0, 0);
 	pthread_cond_init(&all_done, NULL);
+	pthread_cond_init(&tick_done, NULL);
 	pthread_mutex_lock(&queue_lock);
+	pthread_mutex_lock(&tick_dummy_lock);
 	tick_owned = 1;
 	for (int i = 0; i < 12; i++)
 	{
