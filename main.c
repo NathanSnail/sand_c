@@ -20,11 +20,24 @@
 #include "render.c"
 #include "input.c"
 
+// void *test(void *arg)
+// {
+
+// }
+
 int main(int argc, char *argv[])
 {
 	#ifndef _WIN32
 	time_handle = &time_spec;
 	#endif
+	// unsigned long s = cur_time();
+	// for(int i = 0; i < 10000; i++)
+	// {
+	// 	pthread_create(&threads[0],NULL,test,NULL);
+	// 	pthread_join(threads[0],NULL);
+	// }
+	// printf("%fms\n",((float)(cur_time()-s))/10000.0f);
+	// exit(0);
 	srand(((long int)cur_time) % (1 << 31));
 	SDL_GetError();
 	init_sim();

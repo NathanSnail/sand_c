@@ -92,17 +92,23 @@ struct timespec *time_handle;
 // unix microseconds
 unsigned long int cur_time()
 {
-	#ifdef _WIN32
+#ifdef _WIN32
 	clock_gettime();
-	#else
-	clock_gettime(0,time_handle);
-	#endif
+#else
+	clock_gettime(0, time_handle);
+#endif
 	return time_spec.tv_sec * 1000 + time_spec.tv_nsec / 1000000;
 }
 
 float randf()
 {
 	return ((float)rand()) / ((float)(RAND_MAX));
+}
+
+float t_rand(int *rng)
+{
+	*rng++;
+	return ((float)rand_r(*rng)) / ((float)(RAND_MAX));
 }
 
 #define max(a, b) (((a) > (b)) ? (a) : (b))

@@ -3,13 +3,15 @@ pthread_cond_t tick_done;
 pthread_mutex_t queue_lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t tick_dummy_lock = PTHREAD_MUTEX_INITIALIZER;
 int tick_owned = 0;
-#define QUEUE_SIZE ((int)((((float)NUM_CHUNKS_X) / 2.0f)+0.999f)) * ((int)((((float)NUM_CHUNKS_Y) / 2.0f)+0.999f))
+#define QUEUE_SIZE ((int)((((float)NUM_CHUNKS_X) / 2.0f) + 0.999f)) * ((int)((((float)NUM_CHUNKS_Y) / 2.0f) + 0.999f))
 struct pos queue[QUEUE_SIZE];
 pthread_t threads[12];
+int random_base = 1000;
+pthread_mutex_t random_lock = PTHREAD_MUTEX_INITIALIZER;
 
 struct particle world[WORLD_WIDTH][WORLD_HEIGHT];
 
-int tick_powder(int x, int y, struct particle cur)
+int tick_powder(int x, int y, struct particle cur, int *rng)
 {
 	if (y > 0)
 	{
@@ -22,7 +24,7 @@ int tick_powder(int x, int y, struct particle cur)
 			return 1;
 		}
 		int dir;
-		if (randf() > 0.5)
+		if (t_rand(rng) > 0.5)
 		{
 			if (x >= WORLD_WIDTH - 1)
 			{
@@ -54,12 +56,12 @@ int tick_powder(int x, int y, struct particle cur)
 	return 0;
 }
 
-void tick_liquid(int x, int y, struct particle cur)
+void tick_liquid(int x, int y, struct particle cur, int *rng)
 {
-	if (!tick_powder(x, y, cur))
+	if (!tick_powder(x, y, cur, rng))
 	{
 		int dir;
-		if (randf() > 0.5)
+		if (t_rand(rng) > 0.5)
 		{
 			if (x >= WORLD_WIDTH - 1)
 			{
@@ -86,7 +88,7 @@ void tick_liquid(int x, int y, struct particle cur)
 	}
 }
 
-void tick_gas(int x, int y, struct particle cur)
+void tick_gas(int x, int y, struct particle cur, int *rng)
 {
 	if (y >= WORLD_HEIGHT - 1)
 	{
@@ -101,7 +103,7 @@ void tick_gas(int x, int y, struct particle cur)
 		return;
 	}
 	int dir;
-	if (randf() > 0.5)
+	if (t_rand(rng) > 0.5)
 	{
 		if (x >= WORLD_WIDTH - 1)
 		{
@@ -138,7 +140,7 @@ void tick_gas(int x, int y, struct particle cur)
 unsigned long int tick_times[60];
 int cur_tick_index = 0;
 
-void tick_pos(int x, int y)
+void tick_pos(int x, int y, int *rng)
 {
 
 	struct particle cur = world[x][y];
@@ -151,13 +153,13 @@ void tick_pos(int x, int y)
 	case AIR:
 		break;
 	case POWDER:
-		tick_powder(x, y, cur);
+		tick_powder(x, y, cur, rng);
 		break;
 	case LIQUID:
-		tick_liquid(x, y, cur);
+		tick_liquid(x, y, cur, rng);
 		break;
 	case GAS:
-		tick_gas(x, y, cur);
+		tick_gas(x, y, cur, rng);
 		break;
 	case STATIC:
 		break;
@@ -168,38 +170,38 @@ void tick_pos(int x, int y)
 	}
 }
 
-void x_handler(int y, int bx, int by)
+void x_handler(int y, int bx, int by, int *rng)
 {
 	if (cur_tick_index % 4 > 2)
 	{
 		for (int x = CHUNK_SIZE - 1; x >= 0; x--)
 		{
-			tick_pos(x + bx * CHUNK_SIZE, y + by * CHUNK_SIZE);
+			tick_pos(x + bx * CHUNK_SIZE, y + by * CHUNK_SIZE, rng);
 		}
 	}
 	else
 	{
 		for (int x = 0; x < CHUNK_SIZE; x++)
 		{
-			tick_pos(x + bx * CHUNK_SIZE, y + by * CHUNK_SIZE);
+			tick_pos(x + bx * CHUNK_SIZE, y + by * CHUNK_SIZE, rng);
 		}
 	}
 }
 
-void tick_chunk(int bx, int by)
+void tick_chunk(int bx, int by, int *rng)
 {
 	if (cur_tick_index % 2 != 0)
 	{
 		for (int y = CHUNK_SIZE - 1; y >= 0; y--)
 		{
-			x_handler(y, bx, by);
+			x_handler(y, bx, by, rng);
 		}
 	}
 	else
 	{
 		for (int y = 0; y < CHUNK_SIZE; y++)
 		{
-			x_handler(y, bx, by);
+			x_handler(y, bx, by, rng);
 		}
 	}
 }
@@ -272,6 +274,11 @@ void tick()
 void *thread_process(void *arg)
 {
 	printf("created\n");
+	pthread_mutex_lock(&random_lock);
+	int rng = random_base;
+	random_base += 1000;
+	pthread_mutex_unlock(&random_lock);
+
 	while (1)
 	{
 		while(tick_owned)
@@ -317,7 +324,7 @@ void *thread_process(void *arg)
 		queue[target].state = PROCCESSING;
 		// vvvvv crashes for some reason.
 		pthread_mutex_unlock(&queue_lock); // we have registered our claim on the chunk now, don't need lock anymore.
-		tick_chunk(queue[target].x, queue[target].y);
+		tick_chunk(queue[target].x, queue[target].y, &rng);
 		queue[target].state = DONE;
 	}
 	return NULL;
