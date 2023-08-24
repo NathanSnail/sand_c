@@ -1,17 +1,8 @@
-pthread_cond_t all_done;
-pthread_cond_t tick_done;
-pthread_mutex_t queue_lock = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t tick_dummy_lock = PTHREAD_MUTEX_INITIALIZER;
-int tick_owned = 0;
-#define QUEUE_SIZE ((int)((((float)NUM_CHUNKS_X) / 2.0f) + 0.999f)) * ((int)((((float)NUM_CHUNKS_Y) / 2.0f) + 0.999f))
-struct pos queue[QUEUE_SIZE];
-pthread_t threads[12];
-int random_base = 1000;
-pthread_mutex_t random_lock = PTHREAD_MUTEX_INITIALIZER;
+long random_base = 16137;
 
 struct particle world[WORLD_WIDTH][WORLD_HEIGHT];
 
-int tick_powder(int x, int y, struct particle cur, int *rng)
+int tick_powder(int x, int y, struct particle cur, long *rng)
 {
 	if (y > 0)
 	{
@@ -56,7 +47,7 @@ int tick_powder(int x, int y, struct particle cur, int *rng)
 	return 0;
 }
 
-void tick_liquid(int x, int y, struct particle cur, int *rng)
+void tick_liquid(int x, int y, struct particle cur, long *rng)
 {
 	if (!tick_powder(x, y, cur, rng))
 	{
@@ -88,7 +79,7 @@ void tick_liquid(int x, int y, struct particle cur, int *rng)
 	}
 }
 
-void tick_gas(int x, int y, struct particle cur, int *rng)
+void tick_gas(int x, int y, struct particle cur, long *rng)
 {
 	if (y >= WORLD_HEIGHT - 1)
 	{
@@ -140,7 +131,7 @@ void tick_gas(int x, int y, struct particle cur, int *rng)
 unsigned long int tick_times[60];
 int cur_tick_index = 0;
 
-void tick_pos(int x, int y, int *rng)
+void tick_pos(int x, int y, long *rng)
 {
 
 	struct particle cur = world[x][y];
@@ -170,7 +161,7 @@ void tick_pos(int x, int y, int *rng)
 	}
 }
 
-void x_handler(int y, int bx, int by, int *rng)
+void x_handler(int y, int bx, int by, long *rng)
 {
 	if (cur_tick_index % 4 > 2)
 	{
@@ -188,7 +179,7 @@ void x_handler(int y, int bx, int by, int *rng)
 	}
 }
 
-void tick_chunk(int bx, int by, int *rng)
+void tick_chunk(int bx, int by, long *rng)
 {
 	if (cur_tick_index % 2 != 0)
 	{
@@ -206,17 +197,33 @@ void tick_chunk(int bx, int by, int *rng)
 	}
 }
 
-void generate_queue(int parity_x, int parity_y)
+void *thread_process(struct t_info *info)
+{
+	printf("created\n");
+	int rng = info->rng;
+	tick_chunk(info->x, info->y, &rng);
+}
+
+
+void tick_grid(int parity_x, int parity_y)
 {
 	int c = 0;
+	pthread_t thread_refs[NUM_CHUNKS_MAX];
+	struct t_info thread_info[NUM_CHUNKS_MAX];
 	for (int bx = parity_x; bx < NUM_CHUNKS_X; bx += 2)
 	{
 		for (int by = parity_y; by < NUM_CHUNKS_Y; by += 2)
 		{
 			printf("%d %d\n",bx,by);
-			queue[c] = new_pos(bx, by);
+			thread_info[c] = new_t_info(bx,by,t_rand(&random_base));
+			pthread_create(&thread_refs[c],NULL,(void *(*)(void *))thread_process,&thread_info[c]);
+			random_base+=c;
 			c++;
 		}
+	}
+	for (int i = 0; i < c; i++) // only slightly sus
+	{
+		pthread_join(thread_refs[i],NULL);
 	}
 }
 
@@ -229,23 +236,7 @@ void tick()
 	{
 		for (int py = 0; py < 2; py++)
 		{
-			// int res = pthread_mutex_unlock(&queue_lock);
-			// printf("%d", res);
-			if (!first_time)
-			{
-				while (!tick_owned)
-				{
-					pthread_cond_wait(&all_done, &queue_lock);
-					printf("wakey wakey\n");
-				}
-			}
-			generate_queue(px, py);
-			first_time = 0;
-			tick_owned = 0;
-			pthread_mutex_lock(&tick_dummy_lock);
-			pthread_cond_broadcast(&tick_done);
-			pthread_mutex_unlock(&tick_dummy_lock);
-			pthread_mutex_unlock(&queue_lock);
+			tick_grid(px,py);
 		}
 	}
 	for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -271,65 +262,6 @@ void tick()
 #endif
 }
 
-void *thread_process(void *arg)
-{
-	printf("created\n");
-	pthread_mutex_lock(&random_lock);
-	int rng = random_base;
-	random_base += 1000;
-	pthread_mutex_unlock(&random_lock);
-
-	while (1)
-	{
-		while(tick_owned)
-		{
-			pthread_cond_wait(&tick_done,&tick_dummy_lock);
-		}
-		pthread_mutex_unlock(&tick_dummy_lock);
-		int res = pthread_mutex_lock(&queue_lock); // take mutex to wait for access to the queue
-		printf("got lock\n");
-		if (tick_owned)
-		{
-			printf("bad dropped!\n");
-			pthread_mutex_unlock(&queue_lock);
-			continue;
-		}
-		int good = 1;
-		int target = -1;
-		for (int i = 0; i < QUEUE_SIZE; i++)
-		{
-			if (queue[i].state == WAITING)
-			{
-				target = i;
-				break;
-			}
-		}
-		for (int i = 0; i < QUEUE_SIZE; i++)
-		{
-			good = good && queue[i].state == DONE;
-		}
-		if (good)
-		{
-			printf("signal\n");
-			tick_owned = 1;
-			pthread_cond_signal(&all_done);
-			pthread_mutex_unlock(&queue_lock);
-			continue;
-		}
-		if (target == -1)
-		{
-			pthread_mutex_unlock(&queue_lock); // something something nested locking.
-			continue;
-		}
-		queue[target].state = PROCCESSING;
-		// vvvvv crashes for some reason.
-		pthread_mutex_unlock(&queue_lock); // we have registered our claim on the chunk now, don't need lock anymore.
-		tick_chunk(queue[target].x, queue[target].y, &rng);
-		queue[target].state = DONE;
-	}
-	return NULL;
-}
-
 void init_sim()
 {
 	for (int x = 0; x < WORLD_WIDTH; x++)
@@ -345,15 +277,5 @@ void init_sim()
 				world[x][y] = get_particle(0);
 			}
 		}
-	}
-	generate_queue(0, 0);
-	pthread_cond_init(&all_done, NULL);
-	pthread_cond_init(&tick_done, NULL);
-	pthread_mutex_lock(&queue_lock);
-	pthread_mutex_lock(&tick_dummy_lock);
-	tick_owned = 1;
-	for (int i = 0; i < 12; i++)
-	{
-		pthread_create(&threads[i], NULL, thread_process, NULL); // dispatch threads
 	}
 }

@@ -6,6 +6,7 @@
 #define CHUNK_SIZE 40
 #define NUM_CHUNKS_X (WORLD_WIDTH / CHUNK_SIZE)
 #define NUM_CHUNKS_Y (WORLD_HEIGHT / CHUNK_SIZE)
+#define NUM_CHUNKS_MAX ((int)(((float)NUM_CHUNKS_X)/2.0+0.9)*(int)(((float)NUM_CHUNKS_Y)/2.0+0.9))
 
 struct colour
 {
@@ -45,6 +46,13 @@ struct pos
 	int y;
 };
 
+struct t_info
+{
+	int x;
+	int y;
+	long rng;
+};
+
 struct colour new_colour(float red, float green, float blue, float alpha)
 {
 	struct colour col;
@@ -71,6 +79,14 @@ struct pos new_pos(int x, int y)
 	created.y = y;
 	created.state = WAITING;
 	return created;
+}
+
+struct t_info new_t_info(int x, int y, long rng)
+{
+	struct t_info created;
+	created.x = x;
+	created.y = y;
+	created.rng = rng;
 }
 
 struct timespec time_spec;
@@ -105,10 +121,13 @@ float randf()
 	return ((float)rand()) / ((float)(RAND_MAX));
 }
 
-float t_rand(int *rng)
+#define MODULUS 1073741827
+#define COEFF 536870923
+#define ADD 268435459
+float t_rand(long *rng) // simple LCG with primes because i think they make it less likely to be garbage
 {
-	*rng++;
-	return ((float)rand_r(*rng)) / ((float)(RAND_MAX));
+	*rng = (*rng * COEFF + ADD) % MODULUS;
+	return (float)((double)(*rng)) / ((double)(MODULUS));
 }
 
 #define max(a, b) (((a) > (b)) ? (a) : (b))
