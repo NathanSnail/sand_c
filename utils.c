@@ -1,9 +1,9 @@
-#define SCREEN_WIDTH 400
-#define SCREEN_HEIGHT 400
-#define PIXEL_SIZE 2
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 704
+#define PIXEL_SIZE 1
 #define WORLD_WIDTH (SCREEN_WIDTH / PIXEL_SIZE)
 #define WORLD_HEIGHT (SCREEN_HEIGHT / PIXEL_SIZE)
-#define CHUNK_SIZE 40
+#define CHUNK_SIZE 64
 #define NUM_CHUNKS_X (WORLD_WIDTH / CHUNK_SIZE)
 #define NUM_CHUNKS_Y (WORLD_HEIGHT / CHUNK_SIZE)
 #define NUM_CHUNKS_MAX ((int)(((float)NUM_CHUNKS_X)/2.0+0.9)*(int)(((float)NUM_CHUNKS_Y)/2.0+0.9))
@@ -131,5 +131,23 @@ float t_rand(long *rng) // simple LCG with primes because i think they make it l
 	return (float)((double)(*rng)) / ((double)(MODULUS));
 }
 
+void clear()
+{
+	#ifdef _WIN32
+	system("cls");
+	#else
+	system("clear");
+	#endif
+}
+
+int str_len(char *str)
+{
+	int l = 0;
+	while(*(str[l]) != "\0")
+	{
+		l++;
+	}
+	return l;
+}
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #define min(a, b) (((a) < (b)) ? (a) : (b))

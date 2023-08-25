@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
 		int quit = handle_input();
 		if (quit)
 		{
+			clear();
 			printf("Quitting!\n");
 			break;
 		}
