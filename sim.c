@@ -199,11 +199,9 @@ void tick_chunk(int bx, int by, long *rng)
 
 void *thread_process(struct t_info *info)
 {
-	printf("created\n");
-	int rng = info->rng;
+	long rng = info->rng;
 	tick_chunk(info->x, info->y, &rng);
 }
-
 
 void tick_grid(int parity_x, int parity_y)
 {
@@ -214,7 +212,6 @@ void tick_grid(int parity_x, int parity_y)
 	{
 		for (int by = parity_y; by < NUM_CHUNKS_Y; by += 2)
 		{
-			printf("%d %d\n",bx,by);
 			thread_info[c] = new_t_info(bx,by,t_rand(&random_base));
 			pthread_create(&thread_refs[c],NULL,(void *(*)(void *))thread_process,&thread_info[c]);
 			random_base+=c;

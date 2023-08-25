@@ -87,6 +87,7 @@ struct t_info new_t_info(int x, int y, long rng)
 	created.x = x;
 	created.y = y;
 	created.rng = rng;
+	return created;
 }
 
 struct timespec time_spec;
