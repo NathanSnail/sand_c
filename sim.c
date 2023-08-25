@@ -269,6 +269,14 @@ void init_sim()
 			{
 				world[x][y] = get_particle(3);
 			}
+			else if (randf() < 0.1)
+			{
+				world[x][y] = get_particle(1);
+			}
+			else if (randf() < 0.1)
+			{
+				world[x][y] = get_particle(2);
+			}
 			else
 			{
 				world[x][y] = get_particle(0);

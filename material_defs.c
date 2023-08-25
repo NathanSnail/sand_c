@@ -2,7 +2,7 @@ struct particle get_particle(int id)
 {
 	const struct particle particles[] =
 		{
-			new_particle(new_colour(0.2f, 0.3f, 0.6f, 1.0f), 0),
+			new_particle(new_colour(0.6f, 0.6f, 0.6f, 1.0f), 0),
 			new_particle(new_colour(1.0f, 1.0f, 0.0f, 1.0f), 1),
 			new_particle(new_colour(0.0f, 0.0f, 0.7f, 0.5f), 2),
 			new_particle(new_colour(0.2f, 0.2f, 0.2f, 0.5f), 3),
