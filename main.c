@@ -19,6 +19,7 @@
 #include "sim.c"
 #include "render.c"
 #include "input.c"
+#include "logger.c"
 
 // void *test(void *arg)
 // {
@@ -27,6 +28,7 @@
 
 int main(int argc, char *argv[])
 {
+	//printf("%d",str_len("abcdef"));
 	#ifndef _WIN32
 	time_handle = &time_spec;
 	#endif
@@ -77,8 +79,11 @@ int main(int argc, char *argv[])
 		// {
 		// 	world[i * 35 + 5][WORLD_HEIGHT - 100] = get_particle(2);
 		// }
+		logger("tick");
 		tick();
+		logger("display");
 		display();
+		logger("garbage");
 		unsigned long end = cur_time();
 		if (end > start)
 		{ // stop sleeping for billion years if code is too fast
@@ -87,7 +92,8 @@ int main(int argc, char *argv[])
 		// SDL_Delay(1000);
 		if (loop_count % 10 == 0)
 		{
-			printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
+			show_logs();
+			//printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
 		}
 	}
 

@@ -53,6 +53,12 @@ struct t_info
 	long rng;
 };
 
+struct log_info
+{
+	char name[32];
+	unsigned long time;
+};
+
 struct colour new_colour(float red, float green, float blue, float alpha)
 {
 	struct colour col;
@@ -87,6 +93,20 @@ struct t_info new_t_info(int x, int y, long rng)
 	created.x = x;
 	created.y = y;
 	created.rng = rng;
+	return created;
+}
+
+int str_len(char *str);
+
+struct log_info new_log_info(char *name)
+{
+	struct log_info created;
+	int l = str_len(name);
+	for (int i = 0; i < l; i++)
+	{
+		*(created.name + i) = *(name + i);
+	}
+	created.time = 0;
 	return created;
 }
 
@@ -131,5 +151,31 @@ float t_rand(long *rng) // simple LCG with primes because i think they make it l
 	return (float)((double)(*rng)) / ((double)(MODULUS));
 }
 
+int str_len(char *str)
+{
+	int i = 0;
+	while((*(str + i)) != '\0')
+	{
+		i++;
+	}
+	return i;
+}
+
+int str_eq(char *a, char *b)
+{
+	int l = str_len(a);
+	if (l != str_len(b))
+	{
+		return 0;
+	}
+	for (int i = 0; i < l; i++)
+	{
+		if (*(a + i) != *(b + i))
+		{
+			return 0;
+		}
+	}
+	return 1;
+}
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #define min(a, b) (((a) < (b)) ? (a) : (b))
