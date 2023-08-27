@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 	unsigned long loop_count = 0;
 	unsigned long ran = cur_time();
 	printf("Init Done.\n");
-	for (int i = 0; i < 1000; i++)
+	while(1)
 	{
 		loop_count++;
 		unsigned long start = cur_time();
