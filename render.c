@@ -3,9 +3,6 @@ SDL_Renderer *renderer;
 SDL_Texture *texture;
 unsigned char screen[WORLD_HEIGHT][WORLD_WIDTH][4]; // consider that the struct probably alligns this correctly anyway
 
-unsigned long int frame_times[60];
-int cur_frame_index = 0;
-
 void init_render()
 {
 	SDL_Init(0);
@@ -28,22 +25,7 @@ void display()
 			screen[WORLD_HEIGHT - y - 1][x][3] = (unsigned char)(cur_col.alpha * 255.9);
 		}
 	}
-	#ifdef DEBUG
-	printf("place: %fms\n", ((float)(cur_time() - start)));
-	#endif
 	SDL_UpdateTexture(texture, NULL, screen, 4 * WORLD_WIDTH);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
-	frame_times[cur_frame_index] = cur_time() - start;
-	cur_frame_index += 1;
-	cur_frame_index = cur_frame_index % 60;
-	int sum_time = 0;
-	for (int i = 0; i < 60; i++)
-	{
-		sum_time += frame_times[i];
-	}
-	float last_frame_mean_time = ((float)sum_time) / 60.0f;
-	#ifdef DEBUG
-	printf("frame: %fms\n", last_frame_mean_time);
-	#endif
 	SDL_RenderPresent(renderer);
 }
