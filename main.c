@@ -28,40 +28,18 @@
 
 int main(int argc, char *argv[])
 {
-	//printf("%d",str_len("abcdef"));
 	#ifndef _WIN32
 	time_handle = &time_spec;
 	#endif
-	// unsigned long s = cur_time();
-	// for(int i = 0; i < 10000; i++)
-	// {
-	// 	pthread_create(&threads[0],NULL,test,NULL);
-	// 	pthread_join(threads[0],NULL);
-	// }
-	// printf("%fms\n",((float)(cur_time()-s))/10000.0f);
-	// exit(0);
 	srand(((long int)cur_time) % (1 << 31));
+	logger("init");
 	SDL_GetError();
 	init_sim();
 	init_render();
 	unsigned long loop_count = 0;
 	unsigned long ran = cur_time();
 	printf("Init Done.\n");
-	// pthread_t id[12]; // create a pool
-	// int args[12];
-	// for (int i = 0; i < 12; i++)
-	// {
-	// 	args[i] = i;
-	// 	pthread_create(&id[i], NULL, (void *(*)(void *))test, &args[i]); // dispatch threads
-	// }
-	// for (int i = 0; i < 12; i++)
-	// {
-	// 	pthread_join(id[i], NULL); // await threads
-	// 	printf("done waiting for %d\n", i);
-	// }
-	// printf("done waiting\n");
-	// exit(0);
-	while (1)
+	for (int i = 0; i < 1000; i++)
 	{
 		loop_count++;
 		unsigned long start = cur_time();
@@ -71,14 +49,7 @@ int main(int argc, char *argv[])
 			printf("Quitting!\n");
 			break;
 		}
-		// for (int i = 0; i < 4; i++)
-		// {
-		// 	world[i * 35][WORLD_HEIGHT - 1] = get_particle(1);
-		// }
-		// for (int i = 0; i < 4; i++)
-		// {
-		// 	world[i * 35 + 5][WORLD_HEIGHT - 100] = get_particle(2);
-		// }
+		printf("wow\n");
 		logger("tick");
 		tick();
 		logger("display");
@@ -90,7 +61,7 @@ int main(int argc, char *argv[])
 		  // SDL_Delay(10-min(end-start,10));
 		}
 		// SDL_Delay(1000);
-		if (loop_count % 10 == 0)
+		if (loop_count % 1 == 0)
 		{
 			show_logs();
 			//printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));

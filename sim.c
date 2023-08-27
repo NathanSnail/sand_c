@@ -128,7 +128,6 @@ void tick_gas(int x, int y, struct particle cur, long *rng)
 	}
 }
 
-unsigned long int tick_times[60];
 int cur_tick_index = 0;
 
 void tick_pos(int x, int y, long *rng)
@@ -244,19 +243,6 @@ void tick()
 			world[x][y].ticked = 0;
 		}
 	}
-
-	tick_times[cur_tick_index] = cur_time() - start;
-	cur_tick_index += 1;
-	cur_tick_index = cur_tick_index % 60;
-	int sum_time = 0;
-	for (int i = 0; i < 60; i++)
-	{
-		sum_time += tick_times[i];
-	}
-	float last_tick_mean_time = ((float)sum_time) / 60.0f;
-#ifdef DEBUG
-	printf("tick:  %fms\n", last_tick_mean_time);
-#endif
 }
 
 void init_sim()

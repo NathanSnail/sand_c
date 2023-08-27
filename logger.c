@@ -29,7 +29,7 @@ void logger(char *new)
 		}
 		if (str_eq(logs[i].name, new))
 		{
-			cur_log = i;	
+			cur_log = i;
 			found = 1;
 			break;
 		}
@@ -52,6 +52,7 @@ void show_logs()
 			break;
 		}
 	}
+	//clear();
 	for(int i = 0; i < last; i++)
 	{
 		printf("%s: %lu\n",logs[i].name, logs[i].time); // prob security vuln

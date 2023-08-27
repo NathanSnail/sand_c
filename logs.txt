@@ -1,0 +1,237 @@
+d: 6
+x: 63
+init
+4
+time done
+flcs 0 0 0 init
+Init Done.
+wow
+tick
+4
+time done
+tick init 0
+flcs 0 1 1 tick
+display
+7
+time done
+display init 0
+display tick 1
+flcs 0 2 2 display
+garbage
+7
+time done
+garbage init 0
+garbage tick 1
+garbage display 2
+flcs 0 3 3 garbage
+init: 259
+tick: 11
+display: 7
+garbage: 0
+wow
+tick
+4
+time done
+tick init 0
+flcs 1 -1 1 tick
+display
+7
+time done
+display init 0
+display tick 1
+flcs 1 -1 2 display
+garbage
+7
+time done
+garbage init 0
+garbage tick 1
+garbage display 2
+flcs 1 -1 3 garbage
+init: 259
+tick: 38
+display: 11
+garbage: 0
+wow
+tick
+4
+time done
+tick init 0
+flcs 1 -1 1 tick
+display
+7
+time done
+display init 0
+display tick 1
+flcs 1 -1 2 display
+garbage
+7
+time done
+garbage init 0
+garbage tick 1
+garbage display 2
+flcs 1 -1 3 garbage
+init: 259
+tick: 69
+display: 18
+garbage: 3
+wow
+tick
+4
+time done
+tick init 0
+flcs 1 -1 1 tick
+display
+7
+time done
+display init 0
+display tick 1
+flcs 1 -1 2 display
+garbage
+7
+time done
+garbage init 0
+garbage tick 1
+garbage display 2
+flcs 1 -1 3 garbage
+init: 259
+tick: 91
+display: 24
+garbage: 7
+wow
+tick
+4
+time done
+tick init 0
+flcs 1 -1 1 tick
+display
+7
+time done
+display init 0
+display tick 1
+flcs 1 -1 2 display
+garbage
+7
+time done
+garbage init 0
+garbage tick 1
+garbage display 2
+flcs 1 -1 3 garbage
+init: 259
+tick: 112
+display: 27
+garbage: 7
+wow
+tick
+4
+time done
+tick init 0
+flcs 1 -1 1 tick
+display
+7
+time done
+display init 0
+display tick 1
+flcs 1 -1 2 display
+garbage
+7
+time done
+garbage init 0
+garbage tick 1
+garbage display 2
+flcs 1 -1 3 garbage
+init: 259
+tick: 129
+display: 30
+garbage: 7
+wow
+tick
+4
+time done
+tick init 0
+flcs 1 -1 1 tick
+display
+7
+time done
+display init 0
+display tick 1
+flcs 1 -1 2 display
+garbage
+7
+time done
+garbage init 0
+garbage tick 1
+garbage display 2
+flcs 1 -1 3 garbage
+init: 259
+tick: 146
+display: 36
+garbage: 7
+wow
+tick
+4
+time done
+tick init 0
+flcs 1 -1 1 tick
+display
+7
+time done
+display init 0
+display tick 1
+flcs 1 -1 2 display
+garbage
+7
+time done
+garbage init 0
+garbage tick 1
+garbage display 2
+flcs 1 -1 3 garbage
+init: 259
+tick: 164
+display: 40
+garbage: 7
+wow
+tick
+4
+time done
+tick init 0
+flcs 1 -1 1 tick
+display
+7
+time done
+display init 0
+display tick 1
+flcs 1 -1 2 display
+garbage
+7
+time done
+garbage init 0
+garbage tick 1
+garbage display 2
+flcs 1 -1 3 garbage
+init: 259
+tick: 180
+display: 44
+garbage: 7
+wow
+tick
+4
+time done
+tick init 0
+flcs 1 -1 1 tick
+display
+7
+time done
+display init 0
+display tick 1
+flcs 1 -1 2 display
+garbage
+7
+time done
+garbage init 0
+garbage tick 1
+garbage display 2
+flcs 1 -1 3 garbage
+init: 259
+tick: 196
+display: 48
+garbage: 7

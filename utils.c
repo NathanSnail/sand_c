@@ -106,6 +106,7 @@ struct log_info new_log_info(char *name)
 	{
 		*(created.name + i) = *(name + i);
 	}
+	*(created.name + l) = '\0';
 	created.time = 0;
 	return created;
 }
@@ -177,5 +178,15 @@ int str_eq(char *a, char *b)
 	}
 	return 1;
 }
+
+// ew
+void clear() {
+	#ifdef _WIN32
+	system("cls");
+	#else
+	system("clear");
+	#endif
+}
+
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #define min(a, b) (((a) < (b)) ? (a) : (b))
