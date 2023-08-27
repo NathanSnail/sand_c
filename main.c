@@ -49,7 +49,6 @@ int main(int argc, char *argv[])
 			printf("Quitting!\n");
 			break;
 		}
-		printf("wow\n");
 		logger("tick");
 		tick();
 		logger("display");
@@ -63,7 +62,7 @@ int main(int argc, char *argv[])
 		// SDL_Delay(1000);
 		if (loop_count % 1 == 0)
 		{
-			show_logs();
+			//show_logs();
 			//printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
 		}
 	}
