@@ -15,33 +15,30 @@
 // #define DEBUG
 
 #include "utils.c"
+#include "logger.c"
 #include "material_defs.c"
 #include "sim.c"
 #include "render.c"
 #include "input.c"
-#include "logger.c"
 
 // void *test(void *arg)
 // {
 
 // }
 
-int main(int argc, char *argv[])
+int main()
 {
 	#ifndef _WIN32
 	time_handle = &time_spec;
 	#endif
 	srand(((long int)cur_time) % (1 << 31));
-	logger("init");
+	//logger("init");
 	SDL_GetError();
 	init_sim();
 	init_render();
-	unsigned long loop_count = 0;
-	unsigned long ran = cur_time();
 	printf("Init Done.\n");
-	while(1)
+	for(unsigned long loop_count = 1; 1; loop_count++)
 	{
-		loop_count++;
 		unsigned long start = cur_time();
 		int quit = handle_input();
 		if (quit)
@@ -49,7 +46,7 @@ int main(int argc, char *argv[])
 			printf("Quitting!\n");
 			break;
 		}
-		logger("tick");
+		//logger("tick");
 		tick();
 		logger("display");
 		display();
@@ -62,7 +59,8 @@ int main(int argc, char *argv[])
 		// SDL_Delay(1000);
 		if (loop_count % 10 == 0)
 		{
-			show_logs();
+			show_logs(loop_count);
+			show_logs(loop_count);
 			//printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
 		}
 	}

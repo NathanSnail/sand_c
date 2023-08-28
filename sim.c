@@ -200,6 +200,7 @@ void *thread_process(struct t_info *info)
 {
 	long rng = info->rng;
 	tick_chunk(info->x, info->y, &rng);
+	return NULL;
 }
 
 void tick_grid(int parity_x, int parity_y)
@@ -207,6 +208,7 @@ void tick_grid(int parity_x, int parity_y)
 	int c = 0;
 	pthread_t thread_refs[NUM_CHUNKS_MAX];
 	struct t_info thread_info[NUM_CHUNKS_MAX];
+	logger("creation");
 	for (int bx = parity_x; bx < NUM_CHUNKS_X; bx += 2)
 	{
 		for (int by = parity_y; by < NUM_CHUNKS_Y; by += 2)
@@ -218,6 +220,7 @@ void tick_grid(int parity_x, int parity_y)
 			c++;
 		}
 	}
+	logger("joining");
 	for (int i = 0; i < c; i++) // only slightly sus
 	{
 		pthread_join(thread_refs[i],NULL);
@@ -228,7 +231,6 @@ int first_time = 1;
 
 void tick()
 {
-	unsigned long int start = cur_time();
 	for (int px = 0; px < 2; px++)
 	{
 		for (int py = 0; py < 2; py++)

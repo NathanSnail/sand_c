@@ -1,9 +1,9 @@
 #define SCREEN_WIDTH 1080
 #define SCREEN_HEIGHT 720
-#define PIXEL_SIZE 2
+#define PIXEL_SIZE 5
 #define WORLD_WIDTH (SCREEN_WIDTH / PIXEL_SIZE)
 #define WORLD_HEIGHT (SCREEN_HEIGHT / PIXEL_SIZE)
-#define CHUNK_SIZE 36
+#define CHUNK_SIZE 72
 #define NUM_CHUNKS_X (WORLD_WIDTH / CHUNK_SIZE)
 #define NUM_CHUNKS_Y (WORLD_HEIGHT / CHUNK_SIZE)
 #define NUM_CHUNKS_MAX ((int)(((float)NUM_CHUNKS_X)/2.0+0.9)*(int)(((float)NUM_CHUNKS_Y)/2.0+0.9))
@@ -113,22 +113,22 @@ struct log_info new_log_info(char *name)
 
 struct timespec time_spec;
 
-#ifdef _WIN32		 // header part
-void clock_gettime() // C-file part
+#ifdef _WIN32		// header part
+void clock_gettime()	// C-file part
 {
 	__int64 wintime;
 	GetSystemTimeAsFileTime((FILETIME *)&wintime);
-	wintime -= 116444736000000000i64;				 // 1jan1601 to 1jan1970
-	time_spec.tv_sec = wintime / 10000000i64;		 // seconds
-	time_spec.tv_nsec = wintime % 10000000i64 * 100; // nano-seconds
+	wintime -= 116444736000000000i64;			// 1jan1601 to 1jan1970
+	time_spec.tv_sec = wintime / 10000000i64;		// seconds
+	time_spec.tv_nsec = wintime % 10000000i64 * 100;	// nano-seconds
 }
 #else
 struct timespec time_spec;
 struct timespec *time_handle;
 #endif
 
-// unix microseconds
-unsigned long int cur_time()
+// unix miliseconds
+unsigned long cur_time()
 {
 #ifdef _WIN32
 	clock_gettime();
@@ -136,6 +136,16 @@ unsigned long int cur_time()
 	clock_gettime(0, time_handle);
 #endif
 	return time_spec.tv_sec * 1000 + time_spec.tv_nsec / 1000000;
+}
+
+unsigned long time_ns()
+{
+	#ifdef _WIN32
+	clock_gettime();
+	#else
+	clock_gettime(0, time_handle);
+	#endif
+	return time_spec.tv_sec * 1000000000 + time_spec.tv_nsec;
 }
 
 float randf()

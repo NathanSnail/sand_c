@@ -13,7 +13,6 @@ void init_render()
 
 void display()
 {
-	unsigned long int start = cur_time();
 	for (int x = 0; x < WORLD_WIDTH; x++)
 	{
 		for (int y = 0; y < WORLD_HEIGHT; y++)
