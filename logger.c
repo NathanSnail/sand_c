@@ -52,9 +52,10 @@ void show_logs()
 			break;
 		}
 	}
-	//clear();
+	clear();
 	for(int i = 0; i < last; i++)
 	{
-		printf("%s: %lu\n",logs[i].name, logs[i].time); // prob security vuln
+		printf("%s: %lums\n",logs[i].name, logs[i].time); // prob security vuln
 	}
+	fflush(stdout);
 }
