@@ -213,7 +213,6 @@ void tick_grid(int parity_x, int parity_y)
 		{
 			t_rand(&random_base); // this is float so yeah
 			thread_info[c] = new_t_info(bx,by,random_base);
-			printf("%d\n",random_base);
 			pthread_create(&thread_refs[c],NULL,(void *(*)(void *))thread_process,&thread_info[c]);
 			random_base+=c;
 			c++;
