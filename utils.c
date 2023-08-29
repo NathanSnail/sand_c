@@ -59,42 +59,14 @@ struct log_info
 	unsigned long time;
 };
 
-struct colour new_colour(float red, float green, float blue, float alpha)
+struct reaction
 {
-	struct colour col;
-	col.red = red;
-	col.green = green;
-	col.blue = blue;
-	col.alpha = alpha;
-	return col;
-}
-
-struct particle new_particle(struct colour col, unsigned int mat)
-{
-	struct particle created;
-	created.col = col;
-	created.mat = mat;
-	created.ticked = WAITING;
-	return created;
-}
-
-struct pos new_pos(int x, int y)
-{
-	struct pos created;
-	created.x = x;
-	created.y = y;
-	created.state = WAITING;
-	return created;
-}
-
-struct t_info new_t_info(int x, int y, long rng)
-{
-	struct t_info created;
-	created.x = x;
-	created.y = y;
-	created.rng = rng;
-	return created;
-}
+	unsigned int mat1;
+	unsigned int mat2;
+	unsigned int to1;
+	unsigned int to2;
+	float prob;
+};
 
 int str_len(char *str);
 
@@ -113,8 +85,8 @@ struct log_info new_log_info(char *name)
 
 struct timespec time_spec;
 
-#ifdef _WIN32		// header part
-void clock_gettime()	// C-file part
+#ifdef _WIN32
+void clock_gettime()
 {
 	__int64 wintime;
 	GetSystemTimeAsFileTime((FILETIME *)&wintime);

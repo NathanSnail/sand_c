@@ -28,7 +28,7 @@ void tick_pos(int x, int y, long *rng)
 	default:
 		printf("invalid material @ %d %d", x, y);
 		fflush(stdout);
-		world[x][y] = get_particle(0);
+		world[x][y] = particles[0];
 	}
 }
 
@@ -86,7 +86,8 @@ void tick_grid(int parity_x, int parity_y)
 		for (int by = parity_y; by < NUM_CHUNKS_Y; by += 2)
 		{
 			t_rand(&random_base); // this is float so yeah
-			thread_info[c] = new_t_info(bx,by,random_base);
+			struct t_info pass = {bx,by,random_base};
+			thread_info[c] = pass;
 			pthread_create(&thread_refs[c],NULL,(void *(*)(void *))thread_process,&thread_info[c]);
 			random_base+=c;
 			c++;
@@ -128,19 +129,19 @@ void init_sim()
 		{
 			if (abs(x - WORLD_WIDTH / 2) < 2 || randf() < 0.1)
 			{
-				world[x][y] = get_particle(3);
+				world[x][y] = particles[3];
 			}
 			else if (randf() < 0.1)
 			{
-				world[x][y] = get_particle(1);
+				world[x][y] = particles[1];
 			}
 			else if (randf() < 0.1)
 			{
-				world[x][y] = get_particle(2);
+				world[x][y] = particles[2];
 			}
 			else
 			{
-				world[x][y] = get_particle(0);
+				world[x][y] = particles[0];
 			}
 		}
 	}
