@@ -4,8 +4,9 @@ int cur_tick_index = 0;
 
 void tick_pos(int x, int y, long *rng)
 {
-
 	struct particle cur = world[x][y];
+	react(x,y,cur.mat,rng);
+	cur = world[x][y];
 	if (cur.ticked)
 	{
 		return;

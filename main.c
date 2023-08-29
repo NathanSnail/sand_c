@@ -14,6 +14,7 @@
 #include "utils.c"
 #include "logger.c"
 #include "material_defs.c"
+#include "reaction.c"
 #include "pixel.c"
 #include "sim.c"
 #include "render.c"

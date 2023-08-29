@@ -1,12 +1,14 @@
-#define WORLD_WIDTH 64
-#define WORLD_HEIGHT 64
+#define CHUNK_SIZE 64
+#define WORLD_WIDTH (4*CHUNK_SIZE)
+#define WORLD_HEIGHT (4*CHUNK_SIZE)
 #define PIXEL_SIZE 1
 #define SCREEN_WIDTH (WORLD_WIDTH * PIXEL_SIZE)
 #define SCREEN_HEIGHT (WORLD_HEIGHT * PIXEL_SIZE)
-#define CHUNK_SIZE 32
 #define NUM_CHUNKS_X (WORLD_WIDTH / CHUNK_SIZE)
 #define NUM_CHUNKS_Y (WORLD_HEIGHT / CHUNK_SIZE)
 #define NUM_CHUNKS_MAX ((int)(((float)NUM_CHUNKS_X)/2.0+0.9)*(int)(((float)NUM_CHUNKS_Y)/2.0+0.9))
+#define NUM_MATS 4
+#define NUM_REACTIONS 1
 
 struct colour
 {

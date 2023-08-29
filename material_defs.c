@@ -1,4 +1,6 @@
-const struct particle particles[] =
+struct particle world[WORLD_WIDTH][WORLD_HEIGHT];
+
+const struct particle particles[NUM_MATS] =
 {
 	{0, {0.6f, 0.6f, 0.6f, 1.0f}, 0},
 	{1, {1.0f, 1.0f, 0.0f, 1.0f}, 0},
@@ -6,19 +8,25 @@ const struct particle particles[] =
 	{3, {0.2f, 0.2f, 0.2f, 0.5f}, 0},
 };
 
-enum type types[] = {
+enum type types[NUM_MATS] = {
 	AIR,
 	POWDER,
 	LIQUID,
 	GAS,
 };
 
-float density[] = {
+float density[NUM_MATS] = {
 	0.0f,
 	1.0f,
 	0.5f,
 	0.05f,
 };
+
+struct reaction reactions[NUM_REACTIONS] =
+{
+	{0,3,0,0,0.5}
+};
+
 /*
 struct reaction get_reaction(int id)
 {

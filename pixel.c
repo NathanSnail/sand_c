@@ -1,5 +1,3 @@
-struct particle world[WORLD_WIDTH][WORLD_HEIGHT];
-
 int tick_powder(int x, int y, struct particle cur, long *rng)
 {
 	if (y > 0)
