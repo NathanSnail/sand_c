@@ -4,7 +4,6 @@
 #include <pthread.h>
 #ifdef _WIN32
 #include <windows.h>
-// #include <timezone.h>
 #else
 #include <sys/time.h>
 #endif
@@ -12,19 +11,12 @@
 #include <SDL.h>
 #undef main
 
-// #define DEBUG
-
 #include "utils.c"
 #include "logger.c"
 #include "material_defs.c"
 #include "sim.c"
 #include "render.c"
 #include "input.c"
-
-// void *test(void *arg)
-// {
-
-// }
 
 int main()
 {
