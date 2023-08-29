@@ -40,7 +40,6 @@ int main()
 		}
 		//logger("tick");
 		tick();
-		logger("display");
 		display();
 		logger("garbage");
 		unsigned long end = cur_time();

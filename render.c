@@ -5,6 +5,7 @@ unsigned char screen[WORLD_HEIGHT][WORLD_WIDTH][4]; // consider that the struct 
 
 void init_render()
 {
+	SDL_GL_SetSwapInterval(0);
 	SDL_Init(0);
 	window = SDL_CreateWindow("Sand Sim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	renderer = SDL_CreateRenderer(window, -1, 0); // 0 is def wrong flags, but i dont know which ones are right
@@ -13,6 +14,7 @@ void init_render()
 
 void display()
 {
+	logger("render");
 	for (int x = 0; x < WORLD_WIDTH; x++)
 	{
 		for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -24,7 +26,9 @@ void display()
 			screen[WORLD_HEIGHT - y - 1][x][3] = (unsigned char)(cur_col.alpha * 255.9);
 		}
 	}
+	logger("texture");
 	SDL_UpdateTexture(texture, NULL, screen, 4 * WORLD_WIDTH);
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
+	logger("present");
 	SDL_RenderPresent(renderer);
 }
