@@ -24,7 +24,8 @@ float density[NUM_MATS] = {
 
 struct reaction reactions[NUM_REACTIONS] =
 {
-	{0,3,0,0,0.5}
+	{0,3,0,0,0.05},
+	{1,2,2,1,1.0}
 };
 
 /*

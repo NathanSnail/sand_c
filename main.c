@@ -49,7 +49,7 @@ int main()
 		{ // stop sleeping for billion years if code is too fast
 		  // SDL_Delay(10-min(end-start,10));
 		}
-		// SDL_Delay(1000);
+		//SDL_Delay(1000);
 		if (loop_count % 10 == 0)
 		{
 			show_logs(loop_count);

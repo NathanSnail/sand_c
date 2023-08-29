@@ -8,7 +8,7 @@
 #define NUM_CHUNKS_Y (WORLD_HEIGHT / CHUNK_SIZE)
 #define NUM_CHUNKS_MAX ((int)(((float)NUM_CHUNKS_X)/2.0+0.9)*(int)(((float)NUM_CHUNKS_Y)/2.0+0.9))
 #define NUM_MATS 4
-#define NUM_REACTIONS 1
+#define NUM_REACTIONS 2
 
 struct colour
 {
