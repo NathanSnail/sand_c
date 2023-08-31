@@ -1,11 +1,13 @@
 struct particle world[WORLD_WIDTH][WORLD_HEIGHT];
 
+
+
 const struct particle particles[NUM_MATS] =
 	{
 		{0, {0.6f, 0.6f, 0.6f, 1.0f}, 0, 0},
 		{1, {1.0f, 1.0f, 0.0f, 1.0f}, 0, 0},
-		{2, {0.0f, 0.0f, 0.7f, 0.5f}, 0, 0},
-		{3, {0.2f, 0.2f, 0.2f, 0.5f}, 0, 0},
+		{2, {0.0f, 0.0f, 0.7f, 1.0f}, 0, 0},
+		{3, {0.2f, 0.2f, 0.2f, 1.0f}, 0, 0},
 };
 
 enum type types[NUM_MATS] = {
