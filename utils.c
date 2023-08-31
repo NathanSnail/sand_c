@@ -1,12 +1,12 @@
 #define CHUNK_SIZE 64
-#define WORLD_WIDTH (4*CHUNK_SIZE)
-#define WORLD_HEIGHT (4*CHUNK_SIZE)
+#define WORLD_WIDTH (4 * CHUNK_SIZE)
+#define WORLD_HEIGHT (4 * CHUNK_SIZE)
 #define PIXEL_SIZE 1
 #define SCREEN_WIDTH (WORLD_WIDTH * PIXEL_SIZE)
 #define SCREEN_HEIGHT (WORLD_HEIGHT * PIXEL_SIZE)
 #define NUM_CHUNKS_X (WORLD_WIDTH / CHUNK_SIZE)
 #define NUM_CHUNKS_Y (WORLD_HEIGHT / CHUNK_SIZE)
-#define NUM_CHUNKS_MAX ((int)(((float)NUM_CHUNKS_X)/2.0+0.9)*(int)(((float)NUM_CHUNKS_Y)/2.0+0.9))
+#define NUM_CHUNKS_MAX ((int)(((float)NUM_CHUNKS_X) / 2.0 + 0.9) * (int)(((float)NUM_CHUNKS_Y) / 2.0 + 0.9))
 #define NUM_MATS 4
 #define NUM_REACTIONS 2
 
@@ -23,6 +23,7 @@ struct particle
 	unsigned int mat;
 	struct colour col;
 	int ticked;
+	int reacted;
 };
 
 enum type
@@ -52,7 +53,7 @@ struct t_info
 {
 	int x;
 	int y;
-	long rng;
+	long long rng;
 };
 
 struct log_info
@@ -92,9 +93,9 @@ void clock_gettime()
 {
 	__int64 wintime;
 	GetSystemTimeAsFileTime((FILETIME *)&wintime);
-	wintime -= 116444736000000000i64;			// 1jan1601 to 1jan1970
-	time_spec.tv_sec = wintime / 10000000i64;		// seconds
-	time_spec.tv_nsec = wintime % 10000000i64 * 100;	// nano-seconds
+	wintime -= 116444736000000000LL;				// 1jan1601 to 1jan1970
+	time_spec.tv_sec = wintime / 10000000LL;		// seconds
+	time_spec.tv_nsec = wintime % 10000000LL * 100; // nano-seconds
 }
 #else
 struct timespec time_spec;
@@ -112,14 +113,14 @@ unsigned long cur_time()
 	return time_spec.tv_sec * 1000 + time_spec.tv_nsec / 1000000;
 }
 
-unsigned long time_ns()
+unsigned long long time_ns()
 {
-	#ifdef _WIN32
+#ifdef _WIN32
 	clock_gettime();
-	#else
+#else
 	clock_gettime(0, time_handle);
-	#endif
-	return time_spec.tv_sec * 1000000000 + time_spec.tv_nsec;
+#endif
+	return time_spec.tv_sec * 1000000000LL + time_spec.tv_nsec;
 }
 
 float randf()
@@ -127,19 +128,20 @@ float randf()
 	return ((float)rand()) / ((float)(RAND_MAX));
 }
 
-#define MODULUS 1073741827
-#define COEFF 536870923
-#define ADD 268435459
-float t_rand(long *rng) // simple LCG with primes because i think they make it less likely to be garbage
+#define MODULUS 9223372036854775807LL
+#define COEFF 2862933555777941757LL
+#define ADD 3037000493LL
+float t_rand(long long *rng) // simple LCG with numbers i stole
 {
 	*rng = (*rng * COEFF + ADD) % MODULUS;
-	return (float)((double)(*rng)) / ((double)(MODULUS));
+	long long combined = ((unsigned long long)(*rng) >> 12) | (1022LL << 52);
+	return (*((double *)&combined) * 2.0 - 1.0);
 }
 
 int str_len(char *str)
 {
 	int i = 0;
-	while((*(str + i)) != '\0')
+	while ((*(str + i)) != '\0')
 	{
 		i++;
 	}
@@ -164,12 +166,13 @@ int str_eq(char *a, char *b)
 }
 
 // ew
-void clear() {
-	#ifdef _WIN32
+void clear()
+{
+#ifdef _WIN32
 	system("cls");
-	#else
+#else
 	system("clear");
-	#endif
+#endif
 }
 
 #define max(a, b) (((a) > (b)) ? (a) : (b))

@@ -1,11 +1,14 @@
-long random_base = 16137;
+long long random_base = 16137;
 
 int cur_tick_index = 0;
 
-void tick_pos(int x, int y, long *rng)
+void tick_pos(int x, int y, long long *rng)
 {
 	struct particle cur = world[x][y];
-	react(x,y,cur.mat,rng);
+	if (!cur.reacted)
+	{
+		react(x, y, cur.mat, rng);
+	}
 	cur = world[x][y];
 	if (cur.ticked)
 	{
@@ -33,7 +36,7 @@ void tick_pos(int x, int y, long *rng)
 	}
 }
 
-void x_handler(int y, int bx, int by, long *rng)
+void x_handler(int y, int bx, int by, long long *rng)
 {
 	if (cur_tick_index % 4 > 2)
 	{
@@ -51,7 +54,7 @@ void x_handler(int y, int bx, int by, long *rng)
 	}
 }
 
-void tick_chunk(int bx, int by, long *rng)
+void tick_chunk(int bx, int by, long long *rng)
 {
 	if (cur_tick_index % 2 != 0)
 	{
@@ -71,7 +74,7 @@ void tick_chunk(int bx, int by, long *rng)
 
 void *thread_process(struct t_info *info)
 {
-	long rng = info->rng;
+	long long rng = info->rng;
 	tick_chunk(info->x, info->y, &rng);
 	return NULL;
 }
@@ -87,17 +90,17 @@ void tick_grid(int parity_x, int parity_y)
 		for (int by = parity_y; by < NUM_CHUNKS_Y; by += 2)
 		{
 			t_rand(&random_base); // this is float so yeah
-			struct t_info pass = {bx,by,random_base};
+			struct t_info pass = {bx, by, random_base};
 			thread_info[c] = pass;
-			pthread_create(&thread_refs[c],NULL,(void *(*)(void *))thread_process,&thread_info[c]);
-			random_base+=c;
+			pthread_create(&thread_refs[c], NULL, (void *(*)(void *))thread_process, &thread_info[c]);
+			random_base += c;
 			c++;
 		}
 	}
 	logger("joining");
 	for (int i = 0; i < c; i++) // only slightly sus
 	{
-		pthread_join(thread_refs[i],NULL);
+		pthread_join(thread_refs[i], NULL);
 	}
 }
 
@@ -109,7 +112,7 @@ void tick()
 	{
 		for (int py = 0; py < 2; py++)
 		{
-			tick_grid(px,py);
+			tick_grid(px, py);
 		}
 	}
 	for (int y = 0; y < WORLD_HEIGHT; y++)
@@ -118,6 +121,7 @@ void tick()
 		for (int x = 0; x < WORLD_WIDTH; x++)
 		{
 			world[x][y].ticked = 0;
+			world[x][y].reacted = 0;
 		}
 	}
 }
