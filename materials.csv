@@ -1,5 +1,5 @@
 name,type,red,green,blue,alpha,density
 air,air,0.6,0.6,0.6,0.0,0.0
-sand,powder,1.0f,1.0f,0.0f,1.0f,1.0
-water,liquid,0.0f,0.0f,0.7f,0.7f,0.5
-smoke,gas,0.2f,0.2f,0.2f,1.5f,0.05
+sand,powder,1.0,1.0,0.0,1.0,1.0
+water,liquid,0.0,0.0,0.7,0.7,0.5
+smoke,gas,0.2,0.2,0.2,1.5,0.05

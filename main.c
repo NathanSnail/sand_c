@@ -28,9 +28,12 @@ int main()
 	srand(((long int)cur_time) % (1 << 31));
 	// logger("init");
 	SDL_GetError();
+	printf("Init Done.\n");
+	load_materials();
 	init_sim();
 	init_render();
-	printf("Init Done.\n");
+	// return;
+	// return;
 	// long long z = 10;
 	// for (int i = 0; i < 100; i++)
 	// {
@@ -44,6 +47,7 @@ int main()
 		if (quit)
 		{
 			printf("Quitting!\n");
+			unload_materials();
 			break;
 		}
 		// logger("tick");
@@ -58,8 +62,7 @@ int main()
 		// SDL_Delay(1000);
 		if (loop_count % 10 == 0)
 		{
-			show_logs(loop_count);
-			show_logs(loop_count);
+			// show_logs(loop_count);
 			// printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
 		}
 	}
