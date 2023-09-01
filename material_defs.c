@@ -23,6 +23,7 @@ void line_loop(FILE *f, int pid)
 		ch = fgetc(f);
 		if (ch == ',')
 		{
+			printf("%d %s\n", field, str);
 			len = 1;
 			switch (field)
 			{
@@ -61,6 +62,7 @@ void line_loop(FILE *f, int pid)
 				particles[pid].col.alpha = atof(str);
 				break;
 			case 5:
+				printf("density is dense\n");
 				density[pid] = atof(str);
 				break;
 			default:

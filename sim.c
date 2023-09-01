@@ -136,6 +136,14 @@ void init_sim()
 			{
 				world[x][y] = particles[3];
 			}
+			// else if (y < 100)
+			// {
+			// 	world[x][y] = particles[2];
+			// }
+			// else if (x < 100)
+			// {
+			// 	world[x][y] = particles[3];
+			// }
 			else if (randf() < 0.1)
 			{
 				world[x][y] = particles[1];
