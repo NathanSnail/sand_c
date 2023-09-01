@@ -1,13 +1,16 @@
 #define CHUNK_SIZE 16
-#define WORLD_WIDTH (4 * CHUNK_SIZE)
-#define WORLD_HEIGHT (4 * CHUNK_SIZE)
+#define CHUNK_X 4
+#define CHUNK_Y 4
 #define PIXEL_SIZE 5
+#define WORLD_WIDTH (CHUNK_X * CHUNK_SIZE)
+#define WORLD_HEIGHT (CHUNK_Y * CHUNK_SIZE)
 #define SCREEN_WIDTH (WORLD_WIDTH * PIXEL_SIZE)
 #define SCREEN_HEIGHT (WORLD_HEIGHT * PIXEL_SIZE)
 #define NUM_CHUNKS_X (WORLD_WIDTH / CHUNK_SIZE)
 #define NUM_CHUNKS_Y (WORLD_HEIGHT / CHUNK_SIZE)
 #define NUM_CHUNKS_MAX ((int)(((float)NUM_CHUNKS_X) / 2.0 + 0.9) * (int)(((float)NUM_CHUNKS_Y) / 2.0 + 0.9))
 #define NUM_REACTIONS 2
+// fix this with csv loaders ^
 
 struct colour
 {
