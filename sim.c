@@ -38,7 +38,7 @@ void tick_pos(int x, int y, long long *rng)
 
 void x_handler(int y, int bx, int by, long long *rng)
 {
-	if (cur_tick_index % 4 > 2)
+	if (cur_tick_index % 2)
 	{
 		for (int x = CHUNK_SIZE - 1; x >= 0; x--)
 		{
@@ -56,7 +56,7 @@ void x_handler(int y, int bx, int by, long long *rng)
 
 void tick_chunk(int bx, int by, long long *rng)
 {
-	if (cur_tick_index % 2 != 0)
+	if ((cur_tick_index % 4) < 2)
 	{
 		for (int y = CHUNK_SIZE - 1; y >= 0; y--)
 		{
@@ -124,27 +124,22 @@ void tick()
 			world[x][y].reacted = 0;
 		}
 	}
+	cur_tick_index++;
 }
 
 void init_sim()
 {
+	random_base += (int)(randf() * (float)(1 << 30));
+	printf("%lld\n", random_base);
 	for (int x = 0; x < WORLD_WIDTH; x++)
 	{
 		for (int y = 0; y < WORLD_HEIGHT; y++)
 		{
-			if (abs(x - WORLD_WIDTH / 2) < 2 || randf() < 0.1)
+			if (randf() < 0.1)
 			{
 				world[x][y] = particles[3];
 			}
-			// else if (y < 100)
-			// {
-			// 	world[x][y] = particles[2];
-			// }
-			// else if (x < 100)
-			// {
-			// 	world[x][y] = particles[3];
-			// }
-			else if (randf() < 0.1)
+			else if (randf() < 0.2)
 			{
 				world[x][y] = particles[1];
 			}

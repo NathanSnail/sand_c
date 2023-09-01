@@ -25,19 +25,17 @@ int main()
 #ifndef _WIN32
 	time_handle = &time_spec;
 #endif
-	srand(((long int)cur_time) % (1 << 31));
-	// logger("init");
+	srand(((long int)cur_time()) % (1 << 31));
 	SDL_GetError();
-	printf("Init Done.\n");
 	load_materials();
 	init_sim();
 	init_render();
-	// return;
-	// return;
-	// long long z = 10;
-	// for (int i = 0; i < 100; i++)
+	// printf("Init Done.\n");
+	// long long z = cur_time();
+	// for (int i = 0; i < (1 << 30); i++)
 	// {
-	// 	printf("%f\n", t_rand(&z));
+	// 	t_rand(&z);
+	// 	printf("%lld\n",z);
 	// }
 	// return;
 	for (unsigned long loop_count = 1; 1; loop_count++)
@@ -59,7 +57,7 @@ int main()
 		{ // stop sleeping for billion years if code is too fast
 		  // SDL_Delay(10-min(end-start,10));
 		}
-		// SDL_Delay(1000);
+		// SDL_Delay(10);
 		if (loop_count % 10 == 0)
 		{
 			// show_logs(loop_count);
