@@ -13,11 +13,14 @@ void react(int x,int y, unsigned int mat, long *rng)
 	(x + ox < 0) || (x + ox >= WORLD_WIDTH) ||
 	(y + oy < 0) || (y + oy >= WORLD_HEIGHT))
 	{
+		/*
 		for(int i = 0; i < 4; i++)
 		{
 			printf("%d ",c[i]);
 		}
 		printf("\n");
+		printf("%d\n",x+ox);
+		*/
 		return;
 	}
 	unsigned int other = world[x+ox][y+oy].mat;

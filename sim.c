@@ -6,6 +6,7 @@ void tick_pos(int x, int y, long *rng)
 {
 	struct particle cur = world[x][y];
 	react(x,y,cur.mat,rng);
+	return;
 	cur = world[x][y];
 	if (cur.ticked)
 	{
@@ -86,6 +87,7 @@ void tick_grid(int parity_x, int parity_y)
 	{
 		for (int by = parity_y; by < NUM_CHUNKS_Y; by += 2)
 		{
+			printf("%ld\n",random_base);
 			t_rand(&random_base); // this is float so yeah
 			struct t_info pass = {bx,by,random_base};
 			thread_info[c] = pass;
@@ -124,11 +126,12 @@ void tick()
 
 void init_sim()
 {
+	random_base = (float)(1l<<32)*randf();
 	for (int x = 0; x < WORLD_WIDTH; x++)
 	{
 		for (int y = 0; y < WORLD_HEIGHT; y++)
 		{
-			if (abs(x - WORLD_WIDTH / 2) < 2 || randf() < 0.1)
+			/*if (abs(x - WORLD_WIDTH / 2) < 2 || randf() < 0.1)
 			{
 				world[x][y] = particles[3];
 			}
@@ -143,7 +146,8 @@ void init_sim()
 			else
 			{
 				world[x][y] = particles[0];
-			}
+			}*/
+			world[x][y] = particles[randf() < 0.5 ? 1 : 2];
 		}
 	}
 }
