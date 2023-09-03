@@ -1,4 +1,4 @@
-int tick_powder(int x, int y, struct particle cur, long *rng)
+int tick_powder(int x, int y, struct particle cur, long long *rng)
 {
 	if (y > 0)
 	{
@@ -43,7 +43,7 @@ int tick_powder(int x, int y, struct particle cur, long *rng)
 	return 0;
 }
 
-void tick_liquid(int x, int y, struct particle cur, long *rng)
+void tick_liquid(int x, int y, struct particle cur, long long *rng)
 {
 	if (!tick_powder(x, y, cur, rng))
 	{
@@ -75,7 +75,7 @@ void tick_liquid(int x, int y, struct particle cur, long *rng)
 	}
 }
 
-void tick_gas(int x, int y, struct particle cur, long *rng)
+void tick_gas(int x, int y, struct particle cur, long long *rng)
 {
 	if (y >= WORLD_HEIGHT - 1)
 	{

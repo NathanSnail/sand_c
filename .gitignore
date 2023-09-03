@@ -1,4 +1,8 @@
 .vs
 .vscode
 logs.txt
-build.asm
+main.asm
+main.exe
+main.obj
+vc140.pdb
+
