@@ -4,8 +4,10 @@
 #define PIXEL_SIZE 5
 #define WORLD_WIDTH (CHUNK_X * CHUNK_SIZE)
 #define WORLD_HEIGHT (CHUNK_Y * CHUNK_SIZE)
-#define SCREEN_WIDTH (WORLD_WIDTH * PIXEL_SIZE)
-#define SCREEN_HEIGHT (WORLD_HEIGHT * PIXEL_SIZE)
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
+#define SCREEN_PX_WIDTH (SCREEN_WIDTH / PIXEL_SIZE)
+#define SCREEN_PX_HEIGHT (SCREEN_HEIGHT / PIXEL_SIZE)
 #define NUM_CHUNKS_X (WORLD_WIDTH / CHUNK_SIZE)
 #define NUM_CHUNKS_Y (WORLD_HEIGHT / CHUNK_SIZE)
 #define NUM_CHUNKS_MAX ((int)(((float)NUM_CHUNKS_X) / 2.0 + 0.9) * (int)(((float)NUM_CHUNKS_Y) / 2.0 + 0.9))
@@ -138,6 +140,8 @@ float t_rand(long long *rng) // simple LCG with numbers i stole
 	*rng = (*rng * COEFF + ADD) % MODULUS;
 	long long combined = ((unsigned long long)(*rng) >> 12) | (1022LL << 52);
 	return (*((double *)&combined) * 2.0 - 1.0);
+	// this should always be correctly alligned because long long and double are the same size, as are there pointers.
+	// might crash if called in a loop maybe where compiler tries to simd this?
 }
 
 int str_len(char *str)

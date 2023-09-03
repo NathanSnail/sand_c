@@ -89,7 +89,7 @@ void tick_grid(int parity_x, int parity_y)
 	{
 		for (int by = parity_y; by < NUM_CHUNKS_Y; by += 2)
 		{
-			printf("%ld\n",random_base);
+			//printf("%lld\n",random_base);
 			t_rand(&random_base); // this is float so yeah
 			struct t_info pass = {bx, by, random_base};
 			thread_info[c] = pass;
