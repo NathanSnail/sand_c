@@ -139,7 +139,7 @@ void unload_materials()
 
 struct reaction reactions[NUM_REACTIONS] = {
 	{0, 3, 0, 0, 0.05},
-	{1, 2, 2, 1, 1.0},
+	{1, 2, 2, 1, 0.0},
 };
 
 /*

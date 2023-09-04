@@ -12,10 +12,10 @@ int handle_input()
 			case SDLK_ESCAPE:
 				return 1;
 			case SDLK_w:
-				cam_y--;
+				cam_y++;
 				break;
 			case SDLK_s:
-				cam_y++;
+				cam_y--;
 				break;
 			case SDLK_a:
 				cam_x--;

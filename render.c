@@ -17,11 +17,11 @@ void init_render()
 void display()
 {
 	logger("render");
-	for (int x = cam_x; x < cam_x + SCREEN_PX_WIDTH; x++)
+	for (int x = 0; x < SCREEN_PX_WIDTH; x++)
 	{
-		for (int y = cam_y; y < cam_y + SCREEN_PX_HEIGHT; y++)
+		for (int y = 0; y < SCREEN_PX_HEIGHT; y++)
 		{
-			struct colour cur_col = world[x][y].col;
+			struct colour cur_col = world[x+cam_x][y+cam_y].col;
 			screen[SCREEN_PX_HEIGHT - y - 1][x][0] = (unsigned char)(cur_col.red * 255.9);
 			screen[SCREEN_PX_HEIGHT - y - 1][x][1] = (unsigned char)(cur_col.green * 255.9);
 			screen[SCREEN_PX_HEIGHT - y - 1][x][2] = (unsigned char)(cur_col.blue * 255.9);

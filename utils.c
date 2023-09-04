@@ -1,6 +1,6 @@
-#define CHUNK_SIZE 16
-#define CHUNK_X 8
-#define CHUNK_Y 8
+#define CHUNK_SIZE 32
+#define CHUNK_X 16
+#define CHUNK_Y 16
 #define PIXEL_SIZE 5
 #define WORLD_WIDTH (CHUNK_X * CHUNK_SIZE)
 #define WORLD_HEIGHT (CHUNK_Y * CHUNK_SIZE)
