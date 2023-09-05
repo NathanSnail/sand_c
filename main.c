@@ -60,6 +60,7 @@ int main()
 		// SDL_Delay(10);
 		if (loop_count % 10 == 0)
 		{
+			printf("%d %d\n",cam_x,cam_y);
 			// show_logs(loop_count);
 			// printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
 		}

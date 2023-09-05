@@ -12,16 +12,28 @@ int handle_input()
 			case SDLK_ESCAPE:
 				return 1;
 			case SDLK_w:
-				cam_y++;
+				if (SCREEN_PX_HEIGHT + cam_y < WORLD_HEIGHT)
+				{
+					cam_y++;
+				}
 				break;
 			case SDLK_s:
-				cam_y--;
+				if (cam_y > 0)
+				{
+					cam_y--;
+				}
 				break;
 			case SDLK_a:
-				cam_x--;
+				if (cam_x > 0)
+				{
+					cam_x--;
+				}
 				break;
 			case SDLK_d:
-				cam_x++;
+				if (SCREEN_PX_WIDTH + cam_x < WORLD_WIDTH)
+				{
+					cam_x++;
+				}
 				break;
 			}
 			break;
