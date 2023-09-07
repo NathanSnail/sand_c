@@ -1,6 +1,6 @@
 #define CHUNK_SIZE 32
 #define CHUNK_X 16
-#define CHUNK_Y 16
+#define CHUNK_Y 9
 #define PIXEL_SIZE 1
 #define WORLD_WIDTH (CHUNK_X * CHUNK_SIZE)
 #define WORLD_HEIGHT (CHUNK_Y * CHUNK_SIZE)
@@ -63,7 +63,7 @@ struct t_info
 struct log_info
 {
 	char name[32];
-	unsigned long time;
+	unsigned long long time;
 };
 
 struct reaction

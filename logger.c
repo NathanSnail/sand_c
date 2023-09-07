@@ -42,7 +42,7 @@ void logger(char *new)
 	}
 }
 
-void show_logs(unsigned long c)
+void show_logs(unsigned long long c)
 {
 	int last = -1;
 	for (int i = 0; i < 256; i++)
@@ -54,17 +54,17 @@ void show_logs(unsigned long c)
 		}
 	}
 	// clear(); // slow for some reason? system commands = bad? maybe use ansi escape?
-	unsigned long sum = 0;
+	unsigned long long sum = 0;
 	for (int i = 0; i < last; i++)
 	{
-		printf("%s: %luns\n", logs[i].name, logs[i].time); // prob security vuln
+		printf("%s: %lluns\n", logs[i].name, logs[i].time); // prob security vuln
 		sum += logs[i].time;
 	}
 	for (int i = 0; i < last; i++)
 	{
 		printf("%s: %f%%\n", logs[i].name, ((float)logs[i].time / (float)sum) * 100.0);
 	}
-	printf("total: %luns\n", sum);
+	printf("total: %lluns\n", sum);
 	printf("sum fps: %f\n", (double)c / ((double)sum / 1000000000.0));
 	fflush(stdout);
 }

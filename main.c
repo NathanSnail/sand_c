@@ -38,7 +38,7 @@ int main()
 	// 	printf("%lld\n",z);
 	// }
 	// return;
-	for (unsigned long loop_count = 1; 1; loop_count++)
+	for (unsigned long long loop_count = 1; 1; loop_count++)
 	{
 		unsigned long start = cur_time();
 		int quit = handle_input();
@@ -60,8 +60,8 @@ int main()
 		// SDL_Delay(10);
 		if (loop_count % 10 == 0)
 		{
-			printf("%d %d\n",cam_x,cam_y);
-			// show_logs(loop_count);
+			printf("%lld %lld\n",cam_x,cam_y);
+			show_logs(loop_count);
 			// printf("%fFPS total\n", ((float)loop_count) / ((float)(cur_time() - ran) / 1000.0f));
 		}
 	}

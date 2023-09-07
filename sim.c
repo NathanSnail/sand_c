@@ -89,7 +89,7 @@ void tick_grid(int parity_x, int parity_y)
 	{
 		for (int by = parity_y; by < NUM_CHUNKS_Y; by += 2)
 		{
-			//printf("%lld\n",random_base);
+			// printf("%lld\n",random_base);
 			t_rand(&random_base); // this is float so yeah
 			struct t_info pass = {bx, by, random_base};
 			thread_info[c] = pass;
@@ -147,6 +147,10 @@ void init_sim()
 			else if (randf() < 0.1)
 			{
 				world[x][y] = particles[2];
+			}
+			else if (randf() < 0.1)
+			{
+				world[x][y] = particles[4];
 			}
 			else
 			{
